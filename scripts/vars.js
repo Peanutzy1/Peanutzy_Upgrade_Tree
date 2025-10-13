@@ -1,40 +1,21 @@
+// this file contains.. variables, do you expect it to contain magic?
 'use strict';
-import { tree, node } from './gameplay/objects.js';
-export const vars = {
-  canvas: document.getElementById('gameCanvas'),
-  ctx: null,
+export const canvasElement = document.getElementById('gameCanvas');
+export const ctx = canvasElement.getContext('2d'); 
+
+export const screen = { 
   mouse: { x: 0, y: 0 },
-  camera: { x: 0, y: 0 },
-  world: {
-    mouse: { x: 0, y: 0 },
-    scale: 1,
-    background: '#404040',
-    gainPoints: false,
-  },
-
-  trees: {
-    pointTree: new tree(
-      'pointTree',
-      '#808080',
-      '#ffffff',
-      200,
-      100,
-    ),
-
-  },
+  fps: 30
 };
-vars.ctx = vars.canvas.getContext('2d');
-vars.canvas.style.background = vars.world.background;
 
-vars.trees.pointTree.addNode(
-  new node(
-    vars.trees.pointTree.construct,
-    'start',
-    'start',
-    0, 
-    0, 
-    [], 
-    1, 
-    true
-  )
-);
+export const world = {
+  mouse: { x: 0, y: 0 },
+  x: 0,
+  y: 0,
+  scale: 1,
+  background: 0,
+  gainPoints: false,
+};
+
+export const trees = new Map();
+export const currencies = new Map();

@@ -1,20 +1,19 @@
+// this script includes other listeners
 'use strict';
-import { vars } from '../vars.js';
+import { canvasElement } from '../vars.js';
 
-export const resize = {
-  resizeCanvas: () => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    vars.canvas.style.width = `${width}px`;
-    vars.canvas.style.height = `${height}px`;
-    vars.canvas.width = width;
-    vars.canvas.height = height;
-  },
+const resizeCanvas = () => {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  canvasElement.style.width = `${width}px`;
+  canvasElement.canvas.style.height = `${height}px`;
+  canvasElement.canvas.width = width;
+  canvasElement.canvas.height = height;
+};
 
-  resizeInit: () => {
-    resize.resizeCanvas();
-    addEventListener('resize', () => {
-      resize.resizeCanvas();
-    });
-  },
+export const resizeInit = () => {
+  resizeCanvas();
+  addEventListener('resize', () => {
+    resizeCanvas();
+  });
 };

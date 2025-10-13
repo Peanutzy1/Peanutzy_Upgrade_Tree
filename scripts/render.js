@@ -1,18 +1,12 @@
+// this script is used to draw stuff in the canvas
 'use strict';
-import { vars } from './vars.js';
+import { world, ctx } from './vars.js';
 
-export const renderer = {
-  draw: () => {
-    const ctx = vars.ctx;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    ctx.translate(window.innerWidth / 2, window.innerHeight / 2);
-    ctx.scale(vars.world.scale, vars.world.scale);
-    ctx.translate(vars.camera.x, vars.camera.y); 
-    ctx.beginPath();
-  },
-
-  drawTree(tree) {
-    tree.draw();
-  },
+export const draw = () => {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  ctx.translate(window.innerWidth / 2, window.innerHeight / 2);
+  ctx.scale(world.scale, world.scale);
+  ctx.translate(world.x, world.y); 
+  ctx.beginPath();
 };

@@ -1,33 +1,24 @@
-'use strict';
-/* eslint-env node */
-/* eslint-disable no-unused-vars */
+// this script is used to initialize the game
 
-import { mouse } from './listeners/mouse.js';
-import * as ExListeners from './listeners/other.js';
-import { renderer } from './render.js';
-import { utils } from './utils.js';
-import { tree, node } from './gameplay/objects.js';
-import { points } from './gameplay/points.js';
-import { vars } from './vars.js';
+'use strict';
+
+import { mouseInit } from './listeners/mouse.js';
+import { resizeInit } from './listeners/other.js';
+import { draw } from './render.js';
+import { throttle } from './utils.js';
+import { pointTreeSetup } from './setup/pointTree.js';
 
 function start() {
+  mouseInit();
+  resizeInit();
+  pointTreeSetup();
   requestAnimationFrame(gameLoop);
-  mouse.mouseInit();
-  ExListeners.resize.resizeInit();
 }
 
-let lastTick = performance.now();
-function gameLoop(tick) {
-  const deltaTime = tick - lastTick;
-  lastTick = tick;
-  
-  points.update();
-  renderer.draw();
-  vars.trees.pointTree.draw();
-
-  requestAnimationFrame(gameLoop);
+function gameLoop() { 
+  throttle(() => {
+    draw();
+  });
 }
 
 start();
-
-console.log(vars.trees.pointTree);

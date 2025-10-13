@@ -1,69 +1,73 @@
+// this script is for utility functions
 'use strict';
-import { vars } from './vars.js';
+import { world, screen } from './vars.js';
 
-export const utils = {
-  coordsConverter: (x, y, mode = 0) => { // converts coords, 0 is from canvas to world
-    if (!mode) {
-      const wX = (x - window.innerWidth / 2) 
-        / vars.world.scale + vars.world.camera.x;
-
-      const wY = (y - window.innerHeight / 2) 
-        / vars.world.scale + vars.world.camera.y;
-
-      return { x: wX, y: wY };
-    } else {
-      const cX = (x - vars.world.camera.x) 
-        * vars.world.scale + window.innerWidth / 2;
-
-      const cY = (y - vars.world.camera.y)
-        * vars.world.scale + window.innerHeight / 2;
-             
-      return { x: cX, y: cY };
-    }
-  },
-
-  inRect: (x, y, w, h, pX, pY) => {
-    return pX >= x - w / 2 &&
-      pX <= x + w / 2 &&
-      pY >= y - h / 2 &&
-      pY <= y + h / 2;
-  },
-  
-  inViewport: (x, y) => {
-    return utils.inRect(
-      vars.camera.x,
-      vars.camera.y,
-      window.innerWidth, 
-      window.innerHeight, 
-      x, 
-      y
-    );
-  },
-
-  makeRenderPoints: (x, y, w, h, pad) => {
-    return [
-      { x: x + w / 2 + pad, y: y + h / 2 + pad },
-      { x: x - w / 2 - pad, y: y + h / 2 + pad },
-      { x: x - w / 2 - pad, y: y - h / 2 - pad },
-      { x: x + w / 2 + pad, y: y - h / 2 - pad },
-    ];
-  },
-
-  rectInViewport: (x, y, w, h, pad) => {
-    const rectLeft = x - w / 2 - pad;
-    const rectRight = x + w / 2 + pad;
-    const rectTop = y - h / 2 - pad;
-    const rectBottom = y + h / 2 + pad;
-    
-    const viewLeft = vars.camera.x - window.innerWidth / 2;
-    const viewRight = vars.camera.x + window.innerWidth / 2;
-    const viewTop = vars.camera.y - window.innerHeight / 2;
-    const viewBottom = vars.camera.y + window.innerHeight / 2;
-    
-    return rectRight >= viewLeft &&
-      rectLeft <= viewRight &&
-      rectBottom >= viewTop &&
-      rectTop <= viewBottom;
-  }
+export const screenToWorld = (x, y) => {
+  return { 
+    x: (x - window.innerWidth / 2) / world.scale + world.x,
+    y: (y - window.innerHeight / 2) / world.scale + world.y
+  };
 };
 
+export const worldToScreen = (x, y) => {
+  return {
+    x: (x - world.x) * world.scale + window.innerWidth / 2,
+    y: (y - world.y) * world.scale + window.innerHeight / 2
+  };
+};
+
+export const makeRectBounds = ({ x, y, w, h, pad = 0 }) => {
+  return {
+    left: x - w / 2 - pad,
+    right: x + w / 2 + pad,
+    up: y - h / 2 - pad,
+    down: y + h / 2 + pad
+  };
+};
+
+export const isPointInRect = ({ px, py, x, y, w, h }) => {
+  const { left, right, up, down } = makeRectBounds({ x, y, w, h });
+  return px >= left && px <= right && py >= up && py <= down;
+};
+
+export const isRectInViewport = ({ x, y, w, h, pad = 0 }) => {
+  const { left, right, up, down } = makeRectBounds({ x, y, w, h, pad });
+  const { left: vLeft, right: vRight, up: vUp, down: vDown } = makeRectBounds({
+    x: world.x,
+    y: world.y,
+    w: window.innerWidth,
+    h: window.innerHeight
+  });
+
+  return !(right < vLeft || left > vRight || down < vUp || up > vDown);
+};
+
+export const throttle = (fn, wait = 1000 / screen.fps) => {
+  let lastCall = 0;
+  return function() {
+    if(Date.now() - lastCall > wait) {
+      lastCall = Date.now();
+      fn();
+    }
+  };
+};
+
+export const hexToRgba = (hex) => {
+  // remove hash if present
+  hex = hex.replace(/^#/, '');
+
+  if (hex.length !== 6 && hex.length !== 8) {
+    throw new Error('Hex must be 6 (RGB) or 8 (RGBA) characters');
+  }
+
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  const a = hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1;
+
+  return { r, g, b, a };
+};
+
+export const scaleRGB = (r, g, b, scale) => {
+  return { r: r * scale, g: g * scale, b: b * scale };
+};
