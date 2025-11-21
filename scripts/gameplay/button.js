@@ -1,7 +1,7 @@
 // this files is for the button class, since it is too big
 'use strict';
-import { world, ctx } from '../vars.js';
-import { hexToRgba } from '../utils';
+import { ctx, world } from '../vars.js';
+import { hexToRgba, isRectInViewport, isPointInRect, scaleRGB } from '../utils';
 
 export class Button {
   constructor({
@@ -26,14 +26,9 @@ export class Button {
 
     this.pressed = false;
     this.hovered = false;
-    this.discovered = false;
     this.unlocked = false;
 
-    this.multiplier = 1;
-
     this.tree = undefined;
-    this.mainCurrency = undefined;
-    this.otherCurrency = undefined;
 
     this.rgbaValues = hexToRgba(this.fill);
   }
@@ -41,38 +36,41 @@ export class Button {
   draw() {
     ctx.beginPath();
     ctx.fillStyle = this.fill;
+    if(this.hovered) {
+      const hoveredFill = scaleRGB({ 
+        r: this.rgbaValues.r,
+        g: this.rgbaValues.g,
+        b: this.rgbaValues.b,
+        scale: 0.75
+      });
+      ctx.fillstyle = `rgba(${hoveredFill.r}, ${hoveredFill.g}, ${hoveredFill.b})`;
+    }
     ctx.strokeStyle = this.stroke;
     ctx.lineWidth = 4;
     ctx.strokeRect(this.x, this.y, this.w, this.h);
     ctx.fillRect(this.x, this.y, this.w, this.h);
   }
 
-  discover() {
-    this.discovered = true;
+  isInViewPort() {
+    return isRectInViewport({ x: this.x, y: this.y, w: this.w, h: this.h, pad: 50 });
+  }
+
+  isUnderMouse() {
+    return isPointInRect({ 
+      px: world.mouse.x, py: world.mouse.y,
+      x: this.x, y: this.y, w: this.w, h: this.h 
+    });
   }
 
   unlock() {
-    if (this.discovered) {
-      this.unlocked = true;
-    }
+    this.unlocked = true;
   }
   
   reset() {
-    this.discover = false;
     this.unlocked = false;
   }
 
-  doAction() {
-    if (this.starter) {
-      world.pointGain = 1;
-    } else if (typeof this.action === 'function') {
-      this.action();
-    } else {
-      this.multiplier = 1;
-    }
-  }
-
   get children() {
-    return this.childrenIDs.map(id => this.tree.nodes.get(id));
+    return this.childrenIDs.map(id => this.tree.buttons.get(id));
   }
 }

@@ -14,8 +14,6 @@ export const world = {
   y: 0,
   scale: 1,
   background: 0,
-  gainPoints: false,
 };
 
 export const trees = new Map();
-export const currencies = new Map();

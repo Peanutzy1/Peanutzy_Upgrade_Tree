@@ -10,8 +10,6 @@ export class Tree {
     this.buttonStroke = buttonStroke;
     this.buttonWidth = buttonWidth;
     this.buttonHeight = buttonHeight;
-    this.mainCurrency = undefined;
-    this.otherCurrencies = new Map();
   }
 
   addButton(button) {
