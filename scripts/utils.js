@@ -1,6 +1,6 @@
 // this script is for utility functions
 'use strict';
-import { world, screen } from './vars.js';
+import { world, screen, trees } from './vars.js';
 
 export const screenToWorld = (x, y) => {
   return { 
@@ -33,10 +33,10 @@ export const isPointInRect = ({ px, py, x, y, w, h }) => {
 export const isRectInViewport = ({ x, y, w, h, pad = 0 }) => {
   const { left, right, up, down } = makeRectBounds({ x, y, w, h, pad });
   const { left: vLeft, right: vRight, up: vUp, down: vDown } = makeRectBounds({
-    x: world.x,
-    y: world.y,
-    w: window.innerWidth,
-    h: window.innerHeight
+    x: -world.x,
+    y: -world.y,
+    w: window.innerWidth / world.scale,
+    h: window.innerHeight / world.scale
   });
 
   return !(right < vLeft || left > vRight || down < vUp || up > vDown);
@@ -70,3 +70,19 @@ export function hexToRgba(hex) {
 export const scaleRGB = (r, g, b, scale) => {
   return { r: r * scale, g: g * scale, b: b * scale };
 };
+
+export function buttonScanner() {
+  const viewableButtons = new Set();
+  trees.forEach(tree => {
+    tree.buttons.forEach(button => {
+      if(button.isInViewport() && button.unlocked) {
+        viewableButtons.add(button);
+      } else {
+        button.hovered = false;
+        button.pressed = false;
+        button.clicked = false;
+      }
+    });
+  });
+  screen.viewableButtons = viewableButtons;
+}

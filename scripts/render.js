@@ -1,6 +1,6 @@
 // this script is used to draw stuff in the canvas
 'use strict';
-import { world, ctx, trees } from './vars.js';
+import { world, ctx, screen } from './vars.js';
 
 export const draw = () => {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -8,5 +8,5 @@ export const draw = () => {
   ctx.translate(window.innerWidth / 2, window.innerHeight / 2);
   ctx.scale(world.scale, world.scale);
   ctx.translate(world.x, world.y);
-  trees.forEach(tree => { tree.draw(); });
+  screen.viewableButtons.forEach(button => button.draw());
 };

@@ -12,24 +12,12 @@ export class Tree {
     this.buttonHeight = buttonHeight;
   }
 
-  addButton(button) {
-    this.buttons.set(button.id, button);
-  }
-
-  addMainCurrency(currency) {
-    this.mainCurrency = currency;
-  }
-
-  addOtherCurrencies(currency) {
-    this.otherCurrencies.set(currency.id, currency);
-  } 
-
-  addLink(link) {
-    this.links.set(link.id, link);
-  }
-
   draw() {
-    this.buttons.forEach(e => e.draw());
+    this.buttons.forEach(button => {
+      if(button.unlocked) {
+        button.draw();
+      }
+    });
     this.links.forEach(e => e.draw());
   }
 }

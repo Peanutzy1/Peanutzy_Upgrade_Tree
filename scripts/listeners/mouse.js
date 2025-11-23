@@ -1,16 +1,15 @@
 // this script starts mouse logics like moving and scrolling
 'use strict';
-import { world, screen, canvasElement, trees } from '../vars.js';
-import { screenToWorld } from '../utils.js';
+import { world, screen, canvasElement } from '../vars.js';
+import { screenToWorld, buttonScanner } from '../utils.js';
 export function mouseInit() {
   let leftMouseDown = false;
   let rightMouseDown = false;
   let mouseUp = false;
   let lastX = 0;
   let lastY = 0;
-  let viewableButtons = buttonScanner();
-  buttonHoverController(viewableButtons);
-  buttonHoverController(viewableButtons, leftMouseDown, mouseUp);
+  buttonScanner();
+  buttonHoverController(screen.viewableButtons, leftMouseDown, mouseUp);
   window.addEventListener('mousemove', e => {
     screen.mouse.x = e.clientX;
     screen.mouse.y = e.clientY;
@@ -20,11 +19,11 @@ export function mouseInit() {
       world.y += (e.clientY - lastY) / world.scale;
       lastX = e.clientX;
       lastY = e.clientY;
-      viewableButtons = buttonScanner();
+      buttonScanner();
     }
     world.mouse.x = mouseWorldCoords.x;
     world.mouse.y = mouseWorldCoords.y;
-    viewableButtons.forEach(button => { button.hovered = button.isUnderMouse(); });
+    screen.viewableButtons.forEach(button => { button.hovered = button.isUnderMouse(); });
   });
 
   window.addEventListener('mousedown', e => {
@@ -34,7 +33,7 @@ export function mouseInit() {
       lastY = e.clientY;
     } else {
       leftMouseDown = true;
-      viewableButtons.forEach(button => { button.pressed = button.isUnderMouse; });
+      screen.viewableButtons.forEach(button => { button.pressed = button.isUnderMouse(); });
     }
   });
 
@@ -45,8 +44,8 @@ export function mouseInit() {
     requestAnimationFrame(() => {
       mouseUp = false;
     });
-    viewableButtons.forEach(button => {
-      if(button.isInViewport && button.pressed) {
+    screen.viewableButtons.forEach(button => {
+      if(button.isInViewport() && button.pressed) {
         button.onClick();
       } else {
         button.pressed = false;
@@ -63,24 +62,9 @@ export function mouseInit() {
     const zoomFactor = 1.1;
     if (e.deltaY < 0) { 
       world.scale *= zoomFactor; 
-    } else { world.scale /= zoomFactor; }            
+    } else { world.scale /= zoomFactor; }
+    buttonScanner();            
   }, { passive: false });
-}
-
-function buttonScanner() {
-  const viewableButtons = new Set();
-  trees.forEach(tree => {
-    tree.buttons.forEach(button => {
-      if(button.isInViewport()) {
-        viewableButtons.add(button);
-      } else {
-        button.hovered = false;
-        button.pressed = false;
-        button.clicked = false;
-      }
-    });
-  });
-  return viewableButtons;
 }
 
 function buttonHoverController(buttons, mouseDown, mouseUp) {
@@ -91,10 +75,9 @@ function buttonHoverController(buttons, mouseDown, mouseUp) {
       button.pressed = mouseDown;
       button.clicked = mouseUp;
       hoveringButtons.add(button);
-    } else { 
+    } else {
       button.hovered = false; 
       button.pressed = false;
     }
   });
-  return hoveringButtons;
 }

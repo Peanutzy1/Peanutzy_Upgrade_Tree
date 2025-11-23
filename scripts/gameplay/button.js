@@ -1,14 +1,16 @@
 // this files is for the button class, since it is too big
 'use strict';
-import { ctx, world } from '../vars.js';
+import { ctx, world, screen } from '../vars.js';
 import { hexToRgba, isRectInViewport, isPointInRect } from '../utils.js';
 
 export class Button {
   constructor({
     id = '', description = '', x = 0, y = 0,
     action = () => { console.log(`${this.id} did action`); },
-    requirements = () => { return true; }, 
-    starter = false, tree
+    activateReq = () => { return true; },
+    unlockReq = () => { return true; },
+    childrenIDs = [],
+    tree
   }) {
     this.id = id;
     this.description = description;
@@ -20,14 +22,16 @@ export class Button {
     this.fill = this.tree?.buttonFill ?? '#0080ff';
     this.stroke = this.tree?.buttonStroke ?? '#8000ff';
 
-    this.action = action;
-    this.starter = starter;
-
     this.pressed = false;
     this.hovered = false;
-    this.clicked = false;
-    this.unlocked = false;
-    this.requirements = requirements;
+    this.unlocked = unlockReq();
+    this.activationCount = 0;
+
+    this.activateReq = activateReq;
+    this.unlockReq = unlockReq;
+    this.action = action;
+
+    this.childrenIDs = childrenIDs;
 
     this.rgbaValues = hexToRgba(this.fill);
 
@@ -73,17 +77,23 @@ export class Button {
   }
 
   onClick() {
-    if(this.action) {
+    if(this.action && this.activateReq()) {
+      this.activationCount++;
       this.action();
+      this.unlockController();
     }
     this.pressed = false;
   }
 
-  unlock() {
-    this.unlocked = true;
-  }
-  
-  reset() {
-    this.unlocked = false;
+  unlockController() {
+    for (const i in this.childrenIDs) {
+      const button = this.tree.buttons.get(this.childrenIDs[i]);
+      if(button) {
+        button.unlocked = button.unlockReq();
+        if(button.unlockReq() && button.isInViewport()) {
+          screen.viewableButtons.add(button);
+        }
+      }
+    }
   }
 }

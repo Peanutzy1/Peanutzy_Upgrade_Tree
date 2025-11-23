@@ -5,7 +5,8 @@ export const ctx = canvasElement.getContext('2d');
 
 export const screen = { 
   mouse: { x: 0, y: 0 },
-  fps: 30
+  fps: 30,
+  viewableButtons: new Array()
 };
 
 export const world = {

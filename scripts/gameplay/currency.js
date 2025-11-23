@@ -7,8 +7,4 @@ export class currency {
     this.amount = 0;
     this.passiveGeneration = false;
   }
-
-  add(n) { this.amount += n; }
-  subtract(n) { this.amount -= n ; }
-  set(n) { this.amount = n; }
 }
