@@ -6,7 +6,8 @@ import { hexToRgba, isRectInViewport, isPointInRect } from '../utils.js';
 export class Button {
   constructor({
     id = '', description = '', x = 0, y = 0,
-    childrenIDs = [], action,
+    action = () => { console.log(`${this.id} did action`); },
+    requirements = () => { return true; }, 
     starter = false, tree
   }) {
     this.id = id;
@@ -19,8 +20,6 @@ export class Button {
     this.fill = this.tree?.buttonFill ?? '#0080ff';
     this.stroke = this.tree?.buttonStroke ?? '#8000ff';
 
-    this.childrenIDs = childrenIDs;
-
     this.action = action;
     this.starter = starter;
 
@@ -28,8 +27,11 @@ export class Button {
     this.hovered = false;
     this.clicked = false;
     this.unlocked = false;
+    this.requirements = requirements;
 
     this.rgbaValues = hexToRgba(this.fill);
+
+    this.tree.buttons.set(this.id, this);
   }
 
   draw() {
@@ -83,9 +85,5 @@ export class Button {
   
   reset() {
     this.unlocked = false;
-  }
-
-  get children() {
-    return this.childrenIDs.map(id => this.tree.buttons.get(id));
   }
 }
