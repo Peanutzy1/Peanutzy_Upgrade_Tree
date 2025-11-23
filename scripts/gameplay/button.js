@@ -1,23 +1,23 @@
 // this files is for the button class, since it is too big
 'use strict';
 import { ctx, world } from '../vars.js';
-import { hexToRgba, isRectInViewport, isPointInRect, scaleRGB } from '../utils';
+import { hexToRgba, isRectInViewport, isPointInRect } from '../utils.js';
 
 export class Button {
   constructor({
     id = '', description = '', x = 0, y = 0,
-    childrenIDs = [], action = function() {},
-    starter = false
+    childrenIDs = [], action,
+    starter = false, tree
   }) {
     this.id = id;
     this.description = description;
-
+    this.tree = tree;
     this.x = x;
     this.y = y;
-    this.w = this.tree.buttonWidth;
-    this.h = this.tree.buttonHeight;
-    this.fill = this.tree.buttonFill;
-    this.stroke = this.tree.buttonStroke;
+    this.w = this.tree?.buttonWidth ?? 160;
+    this.h = this.tree?.buttonHeight ?? 100;
+    this.fill = this.tree?.buttonFill ?? '#0080ff';
+    this.stroke = this.tree?.buttonStroke ?? '#8000ff';
 
     this.childrenIDs = childrenIDs;
 
@@ -26,9 +26,8 @@ export class Button {
 
     this.pressed = false;
     this.hovered = false;
+    this.clicked = false;
     this.unlocked = false;
-
-    this.tree = undefined;
 
     this.rgbaValues = hexToRgba(this.fill);
   }
@@ -36,22 +35,31 @@ export class Button {
   draw() {
     ctx.beginPath();
     ctx.fillStyle = this.fill;
-    if(this.hovered) {
-      const hoveredFill = scaleRGB({ 
-        r: this.rgbaValues.r,
-        g: this.rgbaValues.g,
-        b: this.rgbaValues.b,
-        scale: 0.75
-      });
-      ctx.fillstyle = `rgba(${hoveredFill.r}, ${hoveredFill.g}, ${hoveredFill.b})`;
+    if(this.pressed) {
+      ctx.fillStyle = `rgba(
+      ${this.rgbaValues.r * 0.5}, 
+      ${this.rgbaValues.g * 0.5}, 
+      ${this.rgbaValues.b * 0.5},
+      ${this.rgbaValues.a}
+      )`;
+    } else if (this.hovered) {
+      ctx.fillStyle = `rgba(
+      ${this.rgbaValues.r * 0.75}, 
+      ${this.rgbaValues.g * 0.75}, 
+      ${this.rgbaValues.b * 0.75},
+      ${this.rgbaValues.a}
+      )`;
+    } else {
+      ctx.fillStyle = this.fill;
     }
     ctx.strokeStyle = this.stroke;
     ctx.lineWidth = 4;
-    ctx.strokeRect(this.x, this.y, this.w, this.h);
-    ctx.fillRect(this.x, this.y, this.w, this.h);
+    ctx.strokeRect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);
+    ctx.fillRect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);
+    ctx.beginPath();
   }
 
-  isInViewPort() {
+  isInViewport() {
     return isRectInViewport({ x: this.x, y: this.y, w: this.w, h: this.h, pad: 50 });
   }
 
@@ -60,6 +68,13 @@ export class Button {
       px: world.mouse.x, py: world.mouse.y,
       x: this.x, y: this.y, w: this.w, h: this.h 
     });
+  }
+
+  onClick() {
+    if(this.action) {
+      this.action();
+    }
+    this.pressed = false;
   }
 
   unlock() {

@@ -5,20 +5,18 @@
 import { mouseInit } from './listeners/mouse.js';
 import { resizeInit } from './listeners/other.js';
 import { draw } from './render.js';
-import { throttle } from './utils.js';
 import { pointTreeSetup } from './setup/pointTree.js';
 
 function start() {
+  pointTreeSetup();
   mouseInit();
   resizeInit();
-  pointTreeSetup();
   requestAnimationFrame(gameLoop);
 }
 
-function gameLoop() { 
-  throttle(() => {
-    draw();
-  });
+function gameLoop() {
+  draw();
+  requestAnimationFrame(gameLoop);
 }
 
 start();

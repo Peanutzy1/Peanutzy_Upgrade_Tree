@@ -3,27 +3,23 @@
 import { trees } from '../vars.js';
 import { Tree } from '../gameplay/tree.js';
 import { Button } from '../gameplay/button.js';
-import { currency } from '../gameplay/currency.js';
 
 // #region Point tree
 export function pointTreeSetup() {
-  trees.pointTree = new Tree({
+  trees.set('pointTree', new Tree({
     id: 'Point Tree',
-    fill: '#808080',
-    stroke: '#ffffff',
+    buttonFill: '#808080',
+    buttonStroke: '#ffffff',
     buttonWidth: 160,
     buttonHeight: 100
-  });
+  }));
 
-  const pointTree = trees.pointTree;
-
-  pointTree.addMainCurrency(
-    new currency('points')
-  );
+  const pointTree = trees.get('pointTree');
   
   pointTree.addButton(
     new Button({
       id: 'p1',
+      tree: pointTree,
       description: 'starter of all things, 1/s passive point generation',
       x: 0,
       y: 0,
@@ -33,4 +29,4 @@ export function pointTreeSetup() {
     })
   );
 }
-// #endregion
+// #endregion 

@@ -1,36 +1,61 @@
 // this script starts mouse logics like moving and scrolling
 'use strict';
-import { world, screen, canvasElement } from '../vars.js';
-import { screenToWorld, throttle } from '../utils.js';
-export const mouseInit = () => {
-  let mouseDown = false;
+import { world, screen, canvasElement, trees } from '../vars.js';
+import { screenToWorld } from '../utils.js';
+export function mouseInit() {
+  let leftMouseDown = false;
+  let rightMouseDown = false;
+  let mouseUp = false;
   let lastX = 0;
   let lastY = 0;
   let viewableButtons = buttonScanner();
-  window.addEventListener('mousemove', throttle(e => {
-    screen.mouse.x = e.offsetX;
-    screen.mouse.y = e.offsetY;
-    const mouseWorldCoords = screenToWorld(e.offsetX, e.offsetY);
-    if (mouseDown) {
+  buttonHoverController(viewableButtons);
+  buttonHoverController(viewableButtons, leftMouseDown, mouseUp);
+  window.addEventListener('mousemove', e => {
+    screen.mouse.x = e.clientX;
+    screen.mouse.y = e.clientY;
+    const mouseWorldCoords = screenToWorld(e.clientX, e.clientY);
+    if (rightMouseDown) {
       world.x += (e.clientX - lastX) / world.scale;
       world.y += (e.clientY - lastY) / world.scale;
-      lastX = e.offsetX;
-      lastY = e.offsetY;
+      lastX = e.clientX;
+      lastY = e.clientY;
       viewableButtons = buttonScanner();
     }
     world.mouse.x = mouseWorldCoords.x;
     world.mouse.y = mouseWorldCoords.y;
-    buttonHoverController(viewableButtons);
-  }, 33));
+    viewableButtons.forEach(button => { button.hovered = button.isUnderMouse(); });
+  });
 
   window.addEventListener('mousedown', e => {
-    mouseDown = true;
-    lastX = e.offsetX;
-    lastY = e.offsetY;
+    if (e.button === 2) {
+      rightMouseDown = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+    } else {
+      leftMouseDown = true;
+      viewableButtons.forEach(button => { button.pressed = button.isUnderMouse; });
+    }
   });
 
   window.addEventListener('mouseup', () => {
-    mouseDown = false;
+    leftMouseDown = false;
+    rightMouseDown = false;
+    mouseUp = true;
+    requestAnimationFrame(() => {
+      mouseUp = false;
+    });
+    viewableButtons.forEach(button => {
+      if(button.isInViewport && button.pressed) {
+        button.onClick();
+      } else {
+        button.pressed = false;
+      }
+    });
+  });
+
+  window.addEventListener('contextmenu', e => {
+    e.preventDefault();
   });
 
   canvasElement.addEventListener('wheel', e => {
@@ -40,24 +65,36 @@ export const mouseInit = () => {
       world.scale *= zoomFactor; 
     } else { world.scale /= zoomFactor; }            
   }, { passive: false });
-};
+}
 
 function buttonScanner() {
-  const viewableButtons = [];
-  world.trees.forEach(tree => {
+  const viewableButtons = new Set();
+  trees.forEach(tree => {
     tree.buttons.forEach(button => {
       if(button.isInViewport()) {
-        viewableButtons.push(button);
+        viewableButtons.add(button);
+      } else {
+        button.hovered = false;
+        button.pressed = false;
+        button.clicked = false;
       }
     });
   });
   return viewableButtons;
 }
 
-function buttonHoverController(buttons) {
+function buttonHoverController(buttons, mouseDown, mouseUp) {
+  const hoveringButtons = new Set();
   buttons.forEach(button => {
     if(button.isUnderMouse()) {
       button.hovered = true;
-    } else { button.hovered = false; }
+      button.pressed = mouseDown;
+      button.clicked = mouseUp;
+      hoveringButtons.add(button);
+    } else { 
+      button.hovered = false; 
+      button.pressed = false;
+    }
   });
+  return hoveringButtons;
 }

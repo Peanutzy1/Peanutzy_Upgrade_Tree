@@ -6,9 +6,9 @@ const resizeCanvas = () => {
   const width = window.innerWidth;
   const height = window.innerHeight;
   canvasElement.style.width = `${width}px`;
-  canvasElement.canvas.style.height = `${height}px`;
-  canvasElement.canvas.width = width;
-  canvasElement.canvas.height = height;
+  canvasElement.style.height = `${height}px`;
+  canvasElement.width = width;
+  canvasElement.height = height;
 };
 
 export const resizeInit = () => {

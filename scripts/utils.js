@@ -4,15 +4,15 @@ import { world, screen } from './vars.js';
 
 export const screenToWorld = (x, y) => {
   return { 
-    x: (x - window.innerWidth / 2) / world.scale + world.x,
-    y: (y - window.innerHeight / 2) / world.scale + world.y
+    x: (x - window.innerWidth / 2) / world.scale - world.x,
+    y: (y - window.innerHeight / 2) / world.scale - world.y
   };
 };
 
 export const worldToScreen = (x, y) => {
   return {
-    x: (x - world.x) * world.scale + window.innerWidth / 2,
-    y: (y - world.y) * world.scale + window.innerHeight / 2
+    x: (x + world.x) * world.scale + window.innerWidth / 2,
+    y: (y + world.y) * world.scale + window.innerHeight / 2
   };
 };
 
@@ -44,18 +44,17 @@ export const isRectInViewport = ({ x, y, w, h, pad = 0 }) => {
 
 export const throttle = (fn, wait = 1000 / screen.fps) => {
   let lastCall = 0;
-  return function() {
+  return function(...args) {
     if(Date.now() - lastCall > wait) {
       lastCall = Date.now();
-      fn();
+      fn(...args);
     }
   };
 };
 
-export const hexToRgba = (hex) => {
+export function hexToRgba(hex) {
   // remove hash if present
-  hex = hex.replace(/^#/, '');
-
+  hex = (hex || '').replace(/^#/, '');
   if (hex.length !== 6 && hex.length !== 8) {
     throw new Error('Hex must be 6 (RGB) or 8 (RGBA) characters');
   }
@@ -66,7 +65,7 @@ export const hexToRgba = (hex) => {
   const a = hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1;
 
   return { r, g, b, a };
-};
+}
 
 export const scaleRGB = (r, g, b, scale) => {
   return { r: r * scale, g: g * scale, b: b * scale };

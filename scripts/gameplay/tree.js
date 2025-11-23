@@ -13,9 +13,6 @@ export class Tree {
   }
 
   addButton(button) {
-    button.tree = this;
-    button.mainCurrency = this.mainCurrency;
-    button.otherCurrencies = this.otherCurrencies;
     this.buttons.set(button.id, button);
   }
 
@@ -32,7 +29,7 @@ export class Tree {
   }
 
   draw() {
-    this.nodes.forEach(e => e.draw());
+    this.buttons.forEach(e => e.draw());
     this.links.forEach(e => e.draw());
   }
 }
