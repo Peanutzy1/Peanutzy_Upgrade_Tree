@@ -4,42 +4,43 @@ import { world, screen, canvasElement } from '../vars.js';
 import { screenToWorld, buttonScanner } from '../utils.js';
 export function mouseInit() {
   let leftMouseDown = false;
-  let rightMouseDown = false;
+  let _rightMouseDown = false;
   let mouseUp = false;
-  let lastX = 0;
-  let lastY = 0;
+  // add "let _lastX = 0; let _lastY = 0" for mouse panning, maybe make right mouse Down do smt else
   buttonScanner();
   buttonHoverController(screen.viewableButtons, leftMouseDown, mouseUp);
   window.addEventListener('mousemove', e => {
     screen.mouse.x = e.clientX;
     screen.mouse.y = e.clientY;
     const mouseWorldCoords = screenToWorld(e.clientX, e.clientY);
-    if (rightMouseDown) {
-      world.x += (e.clientX - lastX) / world.scale;
-      world.y += (e.clientY - lastY) / world.scale;
-      lastX = e.clientX;
-      lastY = e.clientY;
+    /* if (_rightMouseDown) {
+      world.x -= (e.clientX - _lastX) / world.scale;
+      world.y -= (e.clientY - _lastY) / world.scale;
+      _lastX = e.clientX;
+      _lastY = e.clientY;
       buttonScanner();
-    }
+    } */
     world.mouse.x = mouseWorldCoords.x;
     world.mouse.y = mouseWorldCoords.y;
     screen.viewableButtons.forEach(button => { button.hovered = button.isUnderMouse(); });
   });
 
-  window.addEventListener('mousedown', e => {
-    if (e.button === 2) {
-      rightMouseDown = true;
-      lastX = e.clientX;
-      lastY = e.clientY;
+  window.addEventListener('mousedown', () => {
+    /* if (e.button === 2) {
+      _rightMouseDown = true;
+      _lastX = e.clientX;
+      _lastY = e.clientY;
     } else {
       leftMouseDown = true;
       screen.viewableButtons.forEach(button => { button.pressed = button.isUnderMouse(); });
-    }
+    } */
+    leftMouseDown = true;
+    screen.viewableButtons.forEach(button => { button.pressed = button.isUnderMouse(); });
   });
 
   window.addEventListener('mouseup', () => {
     leftMouseDown = false;
-    rightMouseDown = false;
+    _rightMouseDown = false;
     mouseUp = true;
     requestAnimationFrame(() => {
       mouseUp = false;
@@ -62,6 +63,7 @@ export function mouseInit() {
     const zoomFactor = 1.1;
     if (e.deltaY < 0) { 
       world.scale *= zoomFactor; 
+      
     } else { world.scale /= zoomFactor; }
     buttonScanner();            
   }, { passive: false });

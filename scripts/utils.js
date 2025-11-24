@@ -4,15 +4,15 @@ import { world, screen, trees } from './vars.js';
 
 export const screenToWorld = (x, y) => {
   return { 
-    x: (x - window.innerWidth / 2) / world.scale - world.x,
-    y: (y - window.innerHeight / 2) / world.scale - world.y
+    x: (x - window.innerWidth / 2) / world.scale + world.x,
+    y: (y - window.innerHeight / 2) / world.scale + world.y
   };
 };
 
 export const worldToScreen = (x, y) => {
   return {
-    x: (x + world.x) * world.scale + window.innerWidth / 2,
-    y: (y + world.y) * world.scale + window.innerHeight / 2
+    x: (x - world.x) * world.scale + window.innerWidth / 2,
+    y: (y - world.y) * world.scale + window.innerHeight / 2
   };
 };
 
@@ -33,8 +33,8 @@ export const isPointInRect = ({ px, py, x, y, w, h }) => {
 export const isRectInViewport = ({ x, y, w, h, pad = 0 }) => {
   const { left, right, up, down } = makeRectBounds({ x, y, w, h, pad });
   const { left: vLeft, right: vRight, up: vUp, down: vDown } = makeRectBounds({
-    x: -world.x,
-    y: -world.y,
+    x: world.x,
+    y: world.y,
     w: window.innerWidth / world.scale,
     h: window.innerHeight / world.scale
   });

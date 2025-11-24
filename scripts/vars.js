@@ -6,7 +6,8 @@ export const ctx = canvasElement.getContext('2d');
 export const screen = { 
   mouse: { x: 0, y: 0 },
   fps: 30,
-  viewableButtons: new Array()
+  viewableButtons: new Array(),
+  deltaTime: 0,
 };
 
 export const world = {
@@ -18,3 +19,5 @@ export const world = {
 };
 
 export const trees = new Map();
+
+export const keyStates = {};
