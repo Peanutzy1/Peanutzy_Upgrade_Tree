@@ -7,7 +7,7 @@ export const ctx = canvasElement.getContext('2d');
 export const screen = { 
   mouse: { x: 0, y: 0 },
   fps: 30,
-  viewableButtons: [], // buttons inside viewport / canvas
+  viewableButtons: new Set(), // buttons inside viewport / canvas
   deltaTime: 0,
 };
 
