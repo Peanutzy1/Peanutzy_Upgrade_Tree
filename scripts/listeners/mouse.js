@@ -6,7 +6,7 @@ export function mouseInit() {
   let leftMouseDown = false;
   let _rightMouseDown = false;
   let mouseUp = false;
-  // add "let _lastX = 0; let _lastY = 0" for mouse panning, maybe make right mouse Down do smt else
+  // add "let _lastX = 0; let _lastY = 0" for mouse panning
   buttonScanner();
   buttonHoverController(screen.viewableButtons, leftMouseDown, mouseUp);
   window.addEventListener('mousemove', e => {
@@ -20,7 +20,7 @@ export function mouseInit() {
       _lastY = e.clientY;
       buttonScanner();
     } */
-    world.mouse.x = mouseWorldCoords.x;
+    world.mouse.x = mouseWorldCoords.x; 
     world.mouse.y = mouseWorldCoords.y;
     screen.viewableButtons.forEach(button => { button.hovered = button.isUnderMouse(); });
   });

@@ -1,4 +1,5 @@
 // this script is used to initialize the game
+// "this part is what the thing actually runs xdd" - peanut
 
 'use strict';
 

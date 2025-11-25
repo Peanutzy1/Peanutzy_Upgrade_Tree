@@ -1,36 +1,48 @@
 // this script is for utility functions
+// "just dump every function in here and it would not be nonsense" - peanut
 'use strict';
+
 import { world, screen, trees } from './vars.js';
 
-export const screenToWorld = (x, y) => {
+// turns screen -> world coords (zoom aware)
+// no use case yet
+export function screenToWorld(x, y) {
   return { 
     x: (x - window.innerWidth / 2) / world.scale + world.x,
     y: (y - window.innerHeight / 2) / world.scale + world.y
   };
-};
+}
 
-export const worldToScreen = (x, y) => {
+// world -> screen coords (zoom aware, as always)
+// used in mouse.js, checks button hover / pressing / clicking
+export function worldToScreen(x, y) {
   return {
     x: (x - world.x) * world.scale + window.innerWidth / 2,
     y: (y - world.y) * world.scale + window.innerHeight / 2
   };
-};
+}
 
-export const makeRectBounds = ({ x, y, w, h, pad = 0 }) => {
+// makes bounds of a rect with padding; x, y are centered
+// used in isRectInViewport() and isPointInRect() (heh its this func's children)
+export function makeRectBounds({ x, y, w, h, pad = 0 }) {
   return {
     left: x - w / 2 - pad,
     right: x + w / 2 + pad,
     up: y - h / 2 - pad,
     down: y + h / 2 + pad
   };
-};
+}
 
-export const isPointInRect = ({ px, py, x, y, w, h }) => {
+// point inside rect?; first 2 params are point's coords, rest is the rect's 
+// use case is in ./gameplay/button.js -> Button.isUnderMouse() method
+export function isPointInRect({ px, py, x, y, w, h }) {
   const { left, right, up, down } = makeRectBounds({ x, y, w, h });
   return px >= left && px <= right && py >= up && py <= down;
-};
+}
 
-export const isRectInViewport = ({ x, y, w, h, pad = 0 }) => {
+// rect in viewport? same params as makeRectBounds()
+// use case is in ./gameplay/button.js on the isInViewport() method
+export function isRectInViewport({ x, y, w, h, pad = 0 }) {
   const { left, right, up, down } = makeRectBounds({ x, y, w, h, pad });
   const { left: vLeft, right: vRight, up: vUp, down: vDown } = makeRectBounds({
     x: world.x,
@@ -40,11 +52,14 @@ export const isRectInViewport = ({ x, y, w, h, pad = 0 }) => {
   });
 
   return !(right < vLeft || left > vRight || down < vUp || up > vDown);
-};
+}
 
+// hex -> {r, g, b a}
+// use case is in button.js Button class's constructor
+// "please do not use 'rgba()' to make a button" - peanut
 export function hexToRgba(hex) {
   // remove hash if present
-  hex = (hex || '').replace(/^#/, '');
+  hex = (hex || '').replace(/^#/, ''); // "i hate RegExps" - Peanut
   if (hex.length !== 6 && hex.length !== 8) {
     throw new Error('Hex must be 6 (RGB) or 8 (RGBA) characters');
   }
@@ -57,10 +72,14 @@ export function hexToRgba(hex) {
   return { r, g, b, a };
 }
 
-export const scaleRGB = (r, g, b, scale) => {
+// not useful you can hardcode the scale anyways
+export function scaleRGB(r, g, b, scale) {
   return { r: r * scale, g: g * scale, b: b * scale };
-};
+}
 
+// "my greatest invention" - Peanut
+// scans all buttons, return all buttons inside viewport.
+// use case is in keyboard.js, scans for buttons if movement key (wasd) is pressed
 export function buttonScanner() {
   const viewableButtons = new Set();
   trees.forEach(tree => {
@@ -75,4 +94,29 @@ export function buttonScanner() {
     });
   });
   screen.viewableButtons = viewableButtons;
+}
+
+// sorry guys if the docs are a bit too extensive because i asked claude to generate this
+// use case (future) is in making descriptions for buttons (wip)
+export function wrapText(ctx, text, maxWidth) {
+  const words = text.split(' '); // makes an array, then seperates each word by spaces
+  const lines = []; // the output, will be individual lines fitting the maxWidth
+  let line = ''; // current line
+
+  for (let i = 0; i < words.length; i++) {
+    const testLine = `${line}${words[i]} `; // current line with the next word 
+    // and a space at the end of that word
+    const metrics = ctx.measureText(testLine); // measures the width of the test line
+    // checks if testline is too long and if were not on the first word
+    // cuz if we dont allow words like supercalifragilisticexpialidocious to exist
+    // it would run into infinite loop
+    if (metrics.width > maxWidth && i > 0) {
+      lines.push(line.trim()); // pushes the line from before to the output
+      line = `${words[i]} `; // starts the line at the new word
+    } else {
+      line = testLine; // set line to be the one in testing aka the one with the word added
+    }
+  }
+  lines.push(line.trim()); // pushes the last fitting line
+  return lines;
 }

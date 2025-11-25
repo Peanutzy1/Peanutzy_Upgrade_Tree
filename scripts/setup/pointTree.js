@@ -1,4 +1,6 @@
 // this script is used to setup context, buttons, trees
+// "will have too much lines maybe" - peanut
+
 'use strict';
 import { trees } from '../vars.js';
 import { Tree } from '../gameplay/tree.js';
