@@ -10,6 +10,8 @@ import { draw } from './render.js';
 import { pointTreeSetup } from './setup/pointTree.js';
 import { screen } from './vars.js';
 
+// starts everything
+// "i love it when it has lowest amount of lines but technically runs the most" - peanut 
 function start() {
   pointTreeSetup();
   mouseInit();
@@ -19,6 +21,8 @@ function start() {
   requestAnimationFrame(gameLoop);
 }
 
+// game loop, runs every frame
+// "isnt it very loopi de doop?" - peanut
 let lastTime = 0;
 function gameLoop(currentTime) {
   keyboardController();

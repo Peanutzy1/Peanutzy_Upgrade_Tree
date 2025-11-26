@@ -121,15 +121,16 @@ export function wrapText(text, maxWidth) {
   return lines;
 }
 
-// draws the wrapped text, spacing is height (px) btw
+// draws the wrapped text, spacing is height (px), and stroke param means draw stroke?
 // used in Button.drawDescription() to draw the description
-export function drawWrappedText({ text, maxWidth, x, y, spacing }) {
+export function drawWrappedText({ text, maxWidth, x, y, spacing, stroke }) {
   const metrics = ctx.measureText('"Hi guys MEEE in code gee im quacking already!?" @ peanut');
   const actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
   let textY = y;
   const lines = wrapText(text, maxWidth);
   lines.forEach(line => { 
-    ctx.fillText(line, x, textY); 
+    ctx.fillText(line, x, textY);
+    stroke && ctx.strokeText(line, x, textY);
     textY += actualHeight + spacing;
   });
 }

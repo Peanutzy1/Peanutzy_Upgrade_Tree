@@ -57,43 +57,47 @@ export class Button {
 
   // "Players would complain if the game's a blank canvas with invisible buttons lol" - peanut
   draw() {
-    ctx.beginPath();
-    // so this fill darkens based on the states
-    // like darker when hovered and EVEN DARKER when its pressed on
-    if(this.pressed) {
-      ctx.fillStyle = `rgba(
-      ${this.rgbaFill.r * 0.5}, 
-      ${this.rgbaFill.g * 0.5}, 
-      ${this.rgbaFill.b * 0.5},
-      ${this.rgbaFill.a}
-      )`;
-    } else if(this.hovered) {
-      ctx.fillStyle = `rgba(
-      ${this.rgbaFill.r * 0.75}, 
-      ${this.rgbaFill.g * 0.75}, 
-      ${this.rgbaFill.b * 0.75},
-      ${this.rgbaFill.a}
-      )`;
-    } else {
-      ctx.fillStyle = this.fill;
-    }
+    if(this.style.type === 'support') {
+      ctx.beginPath();
+      // so this fill darkens based on the states
+      // like darker when hovered and EVEN DARKER when its pressed on
+      if(this.pressed) {
+        ctx.fillStyle = `rgba(
+        ${this.rgbaFill.r * 0.5}, 
+        ${this.rgbaFill.g * 0.5}, 
+        ${this.rgbaFill.b * 0.5},
+        ${this.rgbaFill.a}
+        )`;
+      } else if(this.hovered) {
+        ctx.fillStyle = `rgba(
+        ${this.rgbaFill.r * 0.75}, 
+        ${this.rgbaFill.g * 0.75}, 
+        ${this.rgbaFill.b * 0.75},
+        ${this.rgbaFill.a}
+        )`;
+      } else {
+        ctx.fillStyle = this.fill;
+      }
 
-    // the stroke darkens when its not upgraded yet, and shines the true color when it does
-    if(this.activationCount === 0) {
-      ctx.strokeStyle = `rgba(
-      ${this.rgbaStroke.r * 0.25}, 
-      ${this.rgbaStroke.g * 0.25}, 
-      ${this.rgbaStroke.b * 0.25},
-      ${this.rgbaStroke.a}
-      )`;
-    } else {
-      ctx.strokeStyle = this.stroke;
+      // the stroke darkens when its not upgraded yet, and shines the true color when it does
+      if(this.activationCount === 0) {
+        ctx.strokeStyle = `rgba(
+        ${this.rgbaStroke.r * 0.25}, 
+        ${this.rgbaStroke.g * 0.25}, 
+        ${this.rgbaStroke.b * 0.25},
+        ${this.rgbaStroke.a}
+        )`;
+      } else {
+        ctx.strokeStyle = this.stroke;
+      }
+      ctx.lineWidth = 15;
+      // you can see the button's coords are centered 
+      ctx.strokeRect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);
+      ctx.fillRect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);
+      this.drawDescription();
     }
-    ctx.lineWidth = 4;
-    // you can see the button's coords are centered 
-    ctx.strokeRect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);
-    ctx.fillRect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);
-    this.drawDescription();
+    
+    this.style.draw?.();
   }
 
   // "couldve intergrated this to draw()" - peanut
@@ -107,7 +111,8 @@ export class Button {
       x: this.x,
       y: this.y,
       maxWidth: this.w - 20,
-      spacing: 0
+      spacing: 0,
+      stroke: false
     });
   }
 

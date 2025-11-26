@@ -2,7 +2,7 @@
 // "yay short code" - peanut
 'use strict';
 
-export class currency {
+export class Currency {
   constructor(id) {
     this.id = id;
     this.amount = 0;

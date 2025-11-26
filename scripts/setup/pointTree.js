@@ -19,6 +19,7 @@ export function pointTreeSetup() {
   // follow this format when you are making a button style
   // "ah yes jss (Javascript Style Sheets)"
   const pointTreeButtonStyle = {
+    type: 'support',
     w: 350,
     h: 200,
     fill: '#c0c0c0',
