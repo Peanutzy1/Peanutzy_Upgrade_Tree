@@ -25,14 +25,12 @@ here are my insparation: (both roblox games)
 - the example is also in the link above.
 ### missing features ( my todo list)
 - links
-- ui
-- currency (UNACCEPTABLE HOW CAN A INCREMENTAL GAME HAS NO CURRENCY!!!!) // sorry i need to make ui first before currency, as u can see i alr made the currency class in [currency.js](./scripts/classes/currency.js)
-- quadtree
+- ui (canvas done)
 - a fuckton more stuff will *probably* come
 
 ## notes 
 **expect chaos im 14 while writing this and this is my first project**
 
- 
+**i do use ai to help me on structure or advices, sometimes maybe write some snippets, but everything are all carefully reviewed and modified by me to fit the project's ideas**
 
 - go to [info.md](./docs/general-info.md)
