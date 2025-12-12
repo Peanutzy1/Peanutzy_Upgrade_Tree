@@ -1,88 +1,54 @@
-import eslint from '@eslint/js';
-import globals from 'globals';
-import typescriptPlugin from '@typescript-eslint/eslint-plugin';
-import typescriptParser from '@typescript-eslint/parser';
+// eslint.config.mjs
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+import prettier from "eslint-config-prettier";
+import globals from "globals";
 
 export default [
+  eslint.configs.recommended,
+
+  ...tseslint.configs.recommendedTypeChecked,
+  prettier,
   {
-    files: ['**/*.ts', '**/*.tsx', '**/*.cjs', '**/*.mjs', '**/*.js'],
+    files: ["**/*.{ts,tsx,js,mjs,cjs}"],
     languageOptions: {
-      parser: typescriptParser,
       parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-        project: './tsconfig.json', // if you have strict TS project
+        project: "./tsconfig.json"
       },
       globals: {
         ...globals.browser,
-        ...globals.node,
-        ...globals.es2021,
-      },
+        ...globals.node
+      }
     },
-    plugins: {
-      '@typescript-eslint': typescriptPlugin,
-    },
+
+    ignores: [
+      "dist/**",
+      "node_modules/**",
+      "*.config.js",
+      "*.config.mjs"
+    ],
+
     rules: {
-      // Possible Errors
-      'no-debugger': 'error',
-      'no-dupe-args': 'error',
-      'no-duplicate-case': 'error',
-      'no-empty': ['error', { allowEmptyCatch: true }],
-      'no-extra-semi': 'error',
-      'no-unreachable': 'error',
+      // JS rules
+      curly: ["error", "all"],
+      eqeqeq: ["error", "always"],
 
-      // Best Practices
-      'curly': ['error', 'all'],
-      'eqeqeq': ['error', 'always'],
-      'no-eval': 'error',
-      'no-implied-eval': 'error',
-      'no-multi-spaces': 'error',
-      'no-with': 'error',
-      'yoda': ['error', 'never'],
-
-      // Variables
-      'no-unused-vars': 'off', // disable base JS rule for TS
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
+      // Replace base rules with TS ones
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }
       ],
-      'no-undef': 'off', // handled by TS
 
-      // Stylistic Issues
-      'array-bracket-spacing': ['error', 'never'],
-      'block-spacing': ['error', 'always'],
-      'brace-style': ['error', '1tbs', { allowSingleLine: true }],
-      'camelcase': ['warn', { properties: 'never' }],
-      'comma-dangle': ['error', 'only-multiline'],
-      'comma-spacing': ['error', { before: false, after: true }],
-      'eol-last': ['error', 'always'],
-      'indent': ['error', 2, { SwitchCase: 1 }],
-      'key-spacing': ['error', { beforeColon: false, afterColon: true }],
-      'max-len': ['warn', { code: 100 }],
-      'no-multiple-empty-lines': ['error', { max: 1 }],
-      'object-curly-spacing': ['error', 'always'],
-      'quotes': ['error', 'single', { avoidEscape: true }],
-      'semi': ['error', 'always'],
-      'space-before-blocks': ['error', 'always'],
-      'space-before-function-paren': ['error', 'never'],
-      'space-in-parens': ['error', 'never'],
-      'space-infix-ops': 'error',
-      'spaced-comment': ['error', 'always', { markers: ['/'] }],
+      // TS strict-ish vibes
+      "@typescript-eslint/explicit-function-return-type": "warn",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/consistent-type-imports": "error",
 
-      // ECMAScript 6
-      'arrow-spacing': ['error', { before: true, after: true }],
-      'no-var': 'error',
-      'prefer-const': ['error', { destructuring: 'all' }],
-      'prefer-template': 'warn',
-      'template-curly-spacing': ['error', 'never'],
-
-      // TypeScript-specific
-      '@typescript-eslint/explicit-function-return-type': ['warn'],
-      '@typescript-eslint/explicit-module-boundary-types': ['warn'],
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
-    },
-  },
-  eslint.configs.recommended,
-  eslint.configs['eslint:recommended'],
+      // Prettier-aligned stuff
+      quotes: ["error", "single"],
+      semi: ["error", "always"],
+      indent: ["error", 4]
+    }
+  }
 ];

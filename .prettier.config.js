@@ -62,7 +62,7 @@ export default [
       'comma-dangle': ['error', 'only-multiline'],
       'comma-spacing': ['error', { before: false, after: true }],
       'eol-last': ['error', 'always'],
-      'indent': ['error', 2, { SwitchCase: 1 }],
+      'indent': ['error', 4, { SwitchCase: 1 }],
       'key-spacing': ['error', { beforeColon: false, afterColon: true }],
       'max-len': ['warn', { code: 100 }],
       'no-multiple-empty-lines': ['error', { max: 1 }],
