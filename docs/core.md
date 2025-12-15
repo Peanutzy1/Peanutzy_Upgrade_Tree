@@ -34,13 +34,16 @@ positionContainer.del('entity1');
 - A manager is the “god object” that knows about all containers and all hooks. It can bundle components for an entity, and hooks can operate on it.
 - hooks is an object that has HazelnutHooks in it
 - containers is an object that has ChestnutContainers in it
-- you create a manager via the MacademiaManager class in [here](../src/core/MacademiaManager)
+- you create a manager via the MacademiaManager class in [here](../src/core/MacademiaManager) (also silly as hecc)
 **NOTE**: you have to pass the ContainerMap Generic to the constructor so that it knows the Containers layout
 ### Methods + how to call
 Class for reference: MacademiaManager<C extends ContainerMap>
 - addContainer<K extends keyof C>(name: K, container: ChestnutContainer<C[K]>)
 - addHook(name: string, hook: HazelnutHook<C>)
-- getEntity(id: EntityID)
+- addEntity(id: EntityID)
+- addComponents(id: EntityID, components: Partial<C>)
+- getComponents(id: EntityID)
+- deleteEntityAndComponents(id: EntityID)
 
 ### Example:
 
@@ -60,13 +63,20 @@ manager.addContainer('position', positionContainer);
 manager.addContainer('health', healthContainer);
 
 // Add entities
-positionContainer.add('entity1', { x: 10, y: 20 });
-healthContainer.add('entity1', 100);
+manager.addEntity('entity1');
+
+manager.addComponents('entity1', {
+  position: {x: 10, y: 20},
+  health: 100
+})
 
 // Retrieve a full entity bundle
-const entity = manager.getEntity('entity1'); // getEntity bundles all components for the given ID
+const entity = manager.getEntityComponents('entity1'); // getEntity bundles all components for the given ID
 console.log(entity);
 // Output: { position: { x: 10, y: 20 }, health: 100 }
+
+// Delete an entity and its components
+manager.deleteEntityAndComponent('entity1')
 ```
 
 ## Hook
@@ -79,7 +89,7 @@ A hook keeps track of which entities are “active” at any given moment. It st
 **NOTE**: you have to pass the ContainerMap Generic to the constructor so that the hook knows the manager's containers
 ### Methods
   - addCull(fn: CullFn)
-  - run(initalIDs: string[], manager: MacademiaManager<C>)
+  - cull(initalIDs: string[], manager: MacademiaManager<C>)
   - runFunc(fn: (id: string) => void)
   - getActiveIDs()
 
@@ -116,7 +126,7 @@ aliveHook.addCull((ids, mgr) =>
 manager.addHook('alive', aliveHook);
 
 // Run the hook on a set of IDs
-aliveHook.run(['entity1', 'entity2'], manager);
+aliveHook.cull(['entity1', 'entity2'], manager);
 
 // Run a function on active IDs
 aliveHook.runFunc(id => {
