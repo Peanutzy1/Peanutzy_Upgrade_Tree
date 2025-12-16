@@ -1,19 +1,21 @@
 // this file is for the manager system
-import { ChestnutContainer } from './ChestnutContainer';
+import { ChestnutContainer, ContainerMapFromSchema, ContainerSchema } from './types';
 import { HazelnutHook } from './HazelnutHook';
-import { ContainerMap, EntityID } from './types';
+import { EntityID } from './types';
 
-export class MacademiaManager<C extends ContainerMap> {
-  containers: { [K in keyof C]?: ChestnutContainer<C[K]> } = {};
+export class MacademiaManager<S extends ContainerSchema> {
+  containers: { [K in keyof S]?: ChestnutContainer<ContainerMapFromSchema<S>[K]> } = {};
   hooks: Record<string, unknown> = {};
   entities: Set<EntityID> = new Set();
 
-  addContainer<K extends keyof C>(name: K, container: ChestnutContainer<C[K]>) {
-    this.containers[name] = container;
+  constructor(schema: S) {
+    for (const key in schema) {
+      this.containers[key] = schema[key]();
+    }
   }
 
-  addHook(name: string, hook: HazelnutHook<C>) {
-    this.hooks[name] = hook as HazelnutHook<C>;
+  addHook(name: string, hook: HazelnutHook<S>) {
+    this.hooks[name] = hook as HazelnutHook<S>;
   }
 
   addEntity(id: EntityID) {
@@ -24,8 +26,7 @@ export class MacademiaManager<C extends ContainerMap> {
     this.entities.add(id);
   }
 
-  addComponents(id: EntityID, components: Partial<C>) {
-
+  addComponents(id: EntityID, components: Partial<ContainerMapFromSchema<S>>) {
     if (components == null || typeof components !== 'object') {
       throw new Error(`Components must be a non-null object.`);
     }
@@ -35,10 +36,10 @@ export class MacademiaManager<C extends ContainerMap> {
     }
 
     for (const key in components) {
-      const container = this.containers[key as keyof C];
+      const container = this.containers[key as keyof S];
       if (!container) throw new Error(`Container ${key} does not exist.`);
 
-      const component = components[key as keyof C];
+      const component = components[key as keyof S];
       if (component) container.set(id, component);
     }
   }
@@ -47,22 +48,22 @@ export class MacademiaManager<C extends ContainerMap> {
     if (!this.entities.has(id)) return;
 
     for (const key in this.containers) {
-      const container = this.containers[key as keyof C];
+      const container = this.containers[key as keyof S];
       container?.delete(id);
     }
 
     this.entities.delete(id);
   }
 
-  getComponents(id: EntityID): Partial<C> {
+  getComponents(id: EntityID): Partial<ContainerMapFromSchema<S>> {
     if (!this.entities.has(id)) {
       throw new Error(`the entity ${id} does not exist.`);
     }
 
-    const bundle: Partial<C> = {};
+    const bundle: Partial<ContainerMapFromSchema<S>> = {};
 
     for (const key in this.containers) {
-      const container = this.containers[key as keyof C];
+      const container = this.containers[key as keyof S];
 
       if (!container) continue;
 

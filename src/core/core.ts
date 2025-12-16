@@ -1,4 +1,15 @@
 export { MacademiaManager } from './MacademiaManager';
-export { ChestnutContainer } from './ChestnutContainer';
 export { HazelnutHook } from './HazelnutHook';
-export type { ContainerMap, EntityID, CullFn } from './types';
+export type {
+  EntityID,
+  CullFn,
+  ContainerID,
+  ChestnutContainer,
+  ContainerSchema,
+} from './types';
+
+import { ChestnutContainer } from './types';
+
+export function makeContainer<T>(): ChestnutContainer<T> {
+  return new Map();
+}

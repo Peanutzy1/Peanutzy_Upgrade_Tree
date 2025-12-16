@@ -1,14 +1,12 @@
 # The Core Elements
 ## Container
 ### Definition
-- A container stores components (data) for entities (IDs). Think of it as a Map from entity IDs -> component data.
+- A container stores components (data) for entities (IDs). its literally a Map<EntityID, T> 
 
-- You create a container via the ChestnutContainer class in [here](../src/core/ChestnutContainer) (silly, ikr)
+- You create a container via the ChestnutContainer type in [here](../src/core/ChestnutContainer) (silly, ikr)
 
 ### Methods
-- set(id: ContainerID, component: T)
-- get(id: ContainerID)
-- delete(id: ContainerID)
+- whatever method is in a javascript Map()
 
 ### Example:
 
@@ -16,7 +14,7 @@
 type Position = { x: number; y: number };
 
 // Create a container
-const positionContainer = new ChestnutContainer<Position>();
+const positionContainer: ChestnutContainer<Position> = new Map();
 
 // Add a component for an entity
 // entity1 is the ID, { x, y } is the component
@@ -37,30 +35,28 @@ positionContainer.delete('entity1');
 - you create a manager via the MacademiaManager class in [here](../src/core/MacademiaManager) (also silly as hecc)
 **NOTE**: you have to pass the ContainerMap Generic to the constructor so that it knows the Containers layout
 ### Methods + how to call
-Class for reference: MacademiaManager<C extends ContainerMap>
-- addContainer<K extends keyof C>(name: K, container: ChestnutContainer<C[K]>)
-- addHook(name: string, hook: HazelnutHook<C>)
-- addEntity(id: EntityID)
-- addComponents(id: EntityID, components: Partial<C>)
-- getComponents(id: EntityID)
-- deleteEntityAndComponents(id: EntityID)
+Class call for reference: `MacademiaManager<S extends ContainerSchema>`
+- `addHook(name: string, hook: HazelnutHook<S>)`
+- `addEntity(id: EntityID)`
+- `addComponents(id: EntityID, components: Partial<ContainerMapFromSchema<S>>)`
+- `getComponents(id: EntityID)`
+- `deleteEntityAndComponents(id: EntityID`)
 
 ### Example:
 
 ```ts
-type ContainerMap = {
-  position: { x: number; y: number };
-  health: number;
-};
+
+// a utils function cuz boilerplate sucks
+
+const schema = {
+  position: makeContainer<{x: number, y: number}>
+  health: makeContainer<number>
+}
 
 // Create a manager
-const manager = new MacademiaManager<ContainerMap>();
 
-// Create and add containers
-const positionContainer = new ChestnutContainer<{ x: number; y: number }>();
-const healthContainer = new ChestnutContainer<number>();
-manager.addContainer('position', positionContainer);
-manager.addContainer('health', healthContainer);
+// containers are automatically added via the schema, the generic is inferred from the schema
+const manager = new MacademiaManager(schema);
 
 // Add entities
 manager.addEntity('entity1');
@@ -89,47 +85,59 @@ A hook keeps track of which entities are “active” at any given moment. It st
 **NOTE**: The hook is generic over the same ContainerMap as the manager it operates on.
 ### Methods
   - addCull(fn: CullFn)
-  - cull(initalIDs: string[], manager: MacademiaManager<C>)
+  - cull()
   - runFunc(fn: (id: string) => void)
   - getActiveIDs()
 
 ### Example:
 ```ts
-type ContainerMap = {
-  position: { x: number; y: number };
-  health: number;
-};
+
+// make a schema
+const schema = {
+  position: makeContainer<{x: number, y: number}>
+  health: makeContainer<number>
+}
 
 // Create a manager first
-const manager = new MacademiaManager<ContainerMap>();
-
-// Add some containers
-const positionContainer = new ChestnutContainer<{ x: number; y: number }>();
-const healthContainer = new ChestnutContainer<number>();
-
-manager.addContainer('position', positionContainer);
-manager.addContainer('health', healthContainer);
+const manager = new MacademiaManager(schema);
 
 // Add an entity
-positionContainer.add('entity1', { x: 0, y: 0 });
-healthContainer.add('entity1', 100);
+positionContainer.set('entity1', { x: 0, y: 0 });
+healthContainer.set('entity1', 100);
 
 // Create a hook
-const aliveHook = new HazelnutHook<ContainerMap>(manager);
+const aliveHook = new HazelnutHook(manager);
 
 // Add a cull function: only entities with health > 0
 aliveHook.addCull((ids, mgr) =>
   ids.filter(id => (mgr.getComponents(id).health ?? 0) > 0)
 );
 
+// Add entities
+manager.addEntity('entity1');
+
+manager.addComponents('entity1', {
+  position: {x: 10, y: 20},
+  health: 100
+})
+
+manager.addEntity('entity2');
+
+manager.addComponents('entity2', {
+  position: {x: 30, y: -40},
+  health: 0
+})
+
+
 // Add hook to manager
 manager.addHook('alive', aliveHook);
 
 // Run the hook on a set of IDs
-aliveHook.cull(['entity1', 'entity2']);
+aliveHook.cull();
 
 // Run a function on active IDs
 aliveHook.runFunc(id => {
-  console.log('Active entity:', id, manager.getEntity(id));
+  console.log('Active entity:', id, manager.getComponents(id));
+  // > Active entity: entity1, { position: { x: 10, y: 20 }, health: 100 }
 });
 ```

@@ -1,14 +1,14 @@
 // this file is for the HazelnutHook system
 
 import { MacademiaManager } from './MacademiaManager';
-import { ContainerMap, CullFn } from './types';
+import {ContainerSchema, CullFn, EntityID } from './types';
 
-export class HazelnutHook<C extends ContainerMap> {
+export class HazelnutHook<S extends ContainerSchema> {
   private culls: Array<CullFn> = [];
   private activeIDs: string[] = [];
-  private manager: MacademiaManager<C>;
+  private manager: MacademiaManager<S>;
 
-  constructor(manager: MacademiaManager<C>) {
+  constructor(manager: MacademiaManager<S>) {
     this.manager = manager;
   }
 
@@ -16,15 +16,15 @@ export class HazelnutHook<C extends ContainerMap> {
     this.culls.push(fn);
   }
 
-  cull(initalIDs: string[]) {
-    let ids = initalIDs;
+  cull() {
+    let ids = Array.from(this.manager.entities);
     for (const cull of this.culls) {
       ids = cull(ids, this.manager);
     }
     this.activeIDs = ids;
   }
 
-  runFunc(fn: (id: string) => void) {
+  runFunc(fn: (id: EntityID) => void) {
     for (const id of this.activeIDs) {
       fn(id);
     }
