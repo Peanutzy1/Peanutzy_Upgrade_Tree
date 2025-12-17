@@ -11,11 +11,6 @@ export type ChestnutContainer<T> = Map<EntityID, T>
 
 export type ContainerSchema = Record<ContainerID, () => ChestnutContainer<any>>
 
-type InferContainer<F> =
-  F extends () => ChestnutContainer<infer T>
-    ? ChestnutContainer<T>
-    : never;
-
 export type ContainerMapFromSchema<S extends ContainerSchema> = {
-  [K in keyof S]: InferContainer<S[K]>;
+  [K in keyof S]: ReturnType<S[K]> extends ChestnutContainer<infer T> ? T : never;
 };
