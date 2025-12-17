@@ -5,6 +5,7 @@ import { MacademiaManager } from './MacademiaManager';
 export type CullFn<S extends ContainerSchema> = (ids: string[], manager: MacademiaManager<S>) => string[];
 
 export type EntityID = string;
+export type HookID = string;
 export type ContainerID = string;
 
 export type ChestnutContainer<T> = Map<EntityID, T>

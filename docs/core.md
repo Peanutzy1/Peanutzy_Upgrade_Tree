@@ -36,11 +36,10 @@ positionContainer.delete('entity1');
 **NOTE**: you have to pass the ContainerMap Generic to the constructor so that it knows the Containers layout
 ### Methods + how to call
 Class call for reference: `MacademiaManager<S extends ContainerSchema>`
-- `addHook(name: string, hook: HazelnutHook<S>)`
 - `addEntity(id: EntityID)`
 - `addComponents(id: EntityID, components: Partial<ContainerMapFromSchema<S>>)`
 - `getComponents(id: EntityID)`
-- `deleteEntityAndComponents(id: EntityID`)
+- `deleteEntityAndComponents(id: EntityID)`
 
 ### Example:
 
@@ -106,6 +105,7 @@ positionContainer.set('entity1', { x: 0, y: 0 });
 healthContainer.set('entity1', 100);
 
 // Create a hook
+// hooks are automatically added to the manager's hooks Record object
 const aliveHook = new HazelnutHook(manager);
 
 // Add a cull function: only entities with health > 0
@@ -127,10 +127,6 @@ manager.addComponents('entity2', {
   position: {x: 30, y: -40},
   health: 0
 })
-
-
-// Add hook to manager
-manager.addHook('alive', aliveHook);
 
 // Run the hook on a set of IDs
 aliveHook.cull();

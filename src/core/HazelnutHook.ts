@@ -1,15 +1,16 @@
 // this file is for the HazelnutHook system
 
 import { MacademiaManager } from './MacademiaManager';
-import {ContainerSchema, CullFn, EntityID } from './types';
+import {ContainerSchema, CullFn, EntityID, HookID } from './types';
 
 export class HazelnutHook<S extends ContainerSchema> {
   private culls: Array<CullFn<S>> = [];
   private activeIDs: string[] = [];
   private manager: MacademiaManager<S>;
 
-  constructor(manager: MacademiaManager<S>) {
+  constructor(manager: MacademiaManager<S>, name: HookID) {
     this.manager = manager;
+    this.manager.hooks[name] = this;
   }
 
   addCull(fn: CullFn<S>) {

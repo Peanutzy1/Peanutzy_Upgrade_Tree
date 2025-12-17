@@ -5,17 +5,13 @@ import { EntityID } from './types';
 
 export class MacademiaManager<S extends ContainerSchema> {
   containers: { [K in keyof S]?: ChestnutContainer<ContainerMapFromSchema<S>[K]> } = {};
-  hooks: Record<string, unknown> = {};
+  hooks: Record<string, HazelnutHook<S>> = {};
   entities: Set<EntityID> = new Set();
 
   constructor(schema: S) {
     for (const key in schema) {
       this.containers[key] = schema[key]();
     }
-  }
-
-  addHook(name: string, hook: HazelnutHook<S>) {
-    this.hooks[name] = hook as HazelnutHook<S>;
   }
 
   addEntity(id: EntityID) {
