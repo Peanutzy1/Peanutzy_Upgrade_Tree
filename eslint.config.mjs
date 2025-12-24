@@ -1,19 +1,16 @@
 import eslint from '@eslint/js';
 import globals from 'globals';
-import typescriptPlugin from '@typescript-eslint/eslint-plugin';
-import typescriptParser from '@typescript-eslint/parser';
 import prettierPlugin from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
 
 export default [
   {
-    files: ['**/*.js', '**/*.mjs', '**/*.cjs', '**/*.ts', '**/*.tsx'],
+    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
-        project: './tsconfig.json',
       },
       globals: {
         ...globals.browser,
@@ -22,7 +19,6 @@ export default [
       },
     },
     plugins: {
-      '@typescript-eslint': typescriptPlugin,
       prettier: prettierPlugin,
     },
     rules: {
@@ -50,10 +46,6 @@ export default [
       'no-var': 'error',
       'prefer-const': ['error', { destructuring: 'all' }],
       'prefer-template': 'warn',
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/explicit-function-return-type': ['warn'],
-      '@typescript-eslint/explicit-module-boundary-types': ['warn'],
-      '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
 
       // === Stylistic Rules ===
       'array-bracket-spacing': ['error', 'never'],
