@@ -6,13 +6,26 @@
 
 import { carve } from "./utils/data-storage.js"
 export const pea = {
-    buffer: new ArrayBuffer(100 * 1024 * 1024),
+
+    // ========== STORAGE ==========
     maxEntities: 10000,
-    IS
+
+    IS_ACTIVE: 1 << 0,
+    IS_RENDERED: 1 << 1,
+    IS_DIRTY: 1 << 2,
+
+    // ========== RENDERING ==========
+    fps: 60,
 }
 
 export const nut = {
+    // ========== STORAGE ==========
+    buffer: new ArrayBuffer(100 * 1024 * 1024),
+    head: 0,
 
+    // ========== RENDERING ==========
+    dt: 0,
+    lastTime: 0,
 }
 
 export const zy = {
@@ -20,4 +33,6 @@ export const zy = {
     specializedStates: carve(Uint32Array),
     x: carve(Float32Array),
     y: carve(Float32Array),
+    w: carve(Float32Array),
+    h: carve(Float32Array),
 }
