@@ -4,7 +4,7 @@
  * "at peanutTec, we store helpers seperately" -peanut
  */
 
-import { pea, nut, zy } from '../data-storage.js';
+import { pea, nut, zy, buffer } from '../data-storage.js';
 
 /**
  * @param {
@@ -21,9 +21,8 @@ import { pea, nut, zy } from '../data-storage.js';
  */
 
 export function carve(Type) {
-  const buffer = nut.buffer;
   const entities = pea.maxEntities;
-  const bPE = Type.BYTES_PER_ENTITY;
+  const bPE = Type.BYTES_PER_ELEMENT;
 
   const start = (nut.head + bPE - 1) & ~(bPE - 1);
 

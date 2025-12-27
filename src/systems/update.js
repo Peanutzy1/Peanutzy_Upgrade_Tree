@@ -1,6 +1,6 @@
 /**
  * This file contains update() which will be the main manager of every system
- * runs once per 1000 / pea.fps milisecond
+ * runs once per frame.
  * "UPDATE DIS UPDATE DAT UPDATE EVERYTHING!!" -peanut
  */
 

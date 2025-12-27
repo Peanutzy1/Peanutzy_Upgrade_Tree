@@ -6,7 +6,6 @@
 
 import { carve } from "./utils/data-storage.js"
 export const pea = {
-
     // ========== STORAGE ==========
     maxEntities: 10000,
 
@@ -20,7 +19,6 @@ export const pea = {
 
 export const nut = {
     // ========== STORAGE ==========
-    buffer: new ArrayBuffer(100 * 1024 * 1024),
     head: 0,
 
     // ========== RENDERING ==========
@@ -28,11 +26,12 @@ export const nut = {
     lastTime: 0,
 }
 
+export const buffer = new ArrayBuffer(100 * 1024 * 1024);
+
 export const zy = {
-    idenityStates: carve(Uint32Array),
-    specializedStates: carve(Uint32Array),
+    general: carve(Uint32Array),
+    special: carve(Uint32Array),
     x: carve(Float32Array),
     y: carve(Float32Array),
-    w: carve(Float32Array),
-    h: carve(Float32Array),
 }
+
