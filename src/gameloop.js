@@ -3,16 +3,17 @@
  * "loopi deloop" -peanut
  */
 
-import { nut } from '../data-storage.js';
-import { update } from './update.js';
+import { nut } from './data-storage.js';
+import { update } from './systems/update.js';
 
 export function loopi(currentTime) {
   nut.dt = currentTime - nut.lastTime;
   nut.lastTime = currentTime;
 
-  update();
- 
-  if (nut.dt >= 250000) nut.dt = 250000
+  update(currentTime, nut.dt);
+  
+
+  if (nut.dt >= 250000) nut.dt = 250000;
   update(nut.dt);
 
   requestAnimationFrame(loopi);

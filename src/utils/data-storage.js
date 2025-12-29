@@ -16,12 +16,12 @@ import { pea, nut, zy, buffer } from '../data-storage.js';
  * Int8Array | Uint8Array | Uint8ClampedArray | Int16Array
  * | Uint16Array | Int32Array | Uint32Array | Float32Array
  * | Float64Array | BigInt64Array | BigUint64Array} - the instance, like new Uint32Array()
- * 
+ *
  * "sorry for the big union types idk why it doesnt work if u do @typedef" -peanutzy (yes the developer not the persona)
  */
 
 export function carve(Type) {
-  const entities = pea.maxEntities;
+  const entities = pea.MAX_ENTITIES;
   const bPE = Type.BYTES_PER_ELEMENT;
 
   const start = (nut.head + bPE - 1) & ~(bPE - 1);

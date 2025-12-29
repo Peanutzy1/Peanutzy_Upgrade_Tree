@@ -2,5 +2,6 @@
  * "beep boop i start everything" -peanut
  */
 
-import './systems/init.js'
-import './render/init.js'
+import { systemInit } from './systems/init.js'
+import { renderInit } from './render/init.js'
+

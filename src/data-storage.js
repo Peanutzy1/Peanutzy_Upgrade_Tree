@@ -4,17 +4,22 @@
  * "I wonder where you get your data from" -peanut
  */
 
+import { BUFFER_TYPE } from 'pixi.js';
 import { carve } from './utils/data-storage.js';
 export const pea = {
   // ========== STORAGE ==========
-  maxEntities: 10000,
-
-  IS_ACTIVE: 1 << 0,
-  IS_RENDERED: 1 << 1,
-  IS_DIRTY: 1 << 2,
+  MAX_ENTITIES: 10000,
+  BUFFER_SIZE: 100 * 1024 * 1024,
 
   // ========== RENDERING ==========
-  fps: 60,
+  FPS: 60,
+
+  // ========== BITS ==========
+
+  // ========== GENERAL ==========
+  GEN_IS_ACTIVE: 1 << 0,
+  GEN_IS_RENDERED: 1 << 1,
+  GEN_IS_DIRTY: 1 << 2,
 };
 
 export const nut = {
@@ -24,9 +29,17 @@ export const nut = {
   // ========== RENDERING ==========
   dt: 0,
   lastTime: 0,
+
+  // ========== MOUSE ==========
+  mouseX: 0,
+  mouseY: 0,
+  mouseDown: false,
+
+  // ========== WINDOW ==========
+  mouseX 
 };
 
-export const buffer = new ArrayBuffer(100 * 1024 * 1024);
+export const buffer = new ArrayBuffer(pea.BUFFER_SIZE);
 
 export const zy = {
   general: carve(Uint32Array),
@@ -34,5 +47,3 @@ export const zy = {
   x: carve(Float32Array),
   y: carve(Float32Array),
 };
-
-

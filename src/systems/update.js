@@ -4,7 +4,7 @@
  * "UPDATE DIS UPDATE DAT UPDATE EVERYTHING!!" -peanut
  */
 
-export function update(dt) {
+export function update(currentTime, dt) {
     
 }
 

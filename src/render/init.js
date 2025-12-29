@@ -1,6 +1,11 @@
-import './webgl-init.js'
-import { resizeListener } from '../utils/render.js'
-import { canvas, gl } from './webgl-init.js'
+import { resizeMainCanvas } from '../utils/render.js'
+import { canvas, gl, drawSimple } from './webgl-init.js'
 
-resizeListener(canvas, gl)
-
+export function renderInit() {
+  resizeMainCanvas(canvas, gl);
+  drawSimple();
+  window.addEventListener('resize', () => {
+    resizeMainCanvas();
+    drawSimple();
+  });
+}
