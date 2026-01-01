@@ -1,5 +1,7 @@
 # Welcome to 0 / 0!
 
+## current version: 0 / 0 (literally started this project)
+
 ## an incremental game engine
 - insparations: roblox incremental games
 
