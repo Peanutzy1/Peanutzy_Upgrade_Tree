@@ -1,5 +1,5 @@
-#include "zero_slab.h"
 #include <stdio.h>
+#include "zero_slab.h"
 
 ZeroSlab* slab = nullptr;
 int main()
