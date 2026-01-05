@@ -1,12 +1,17 @@
-#include <stdio.h>
+// The single transportation unit
+#define _POSIX_C_SOURCE 199309L
+#define _POSIX_C_SOURCE 199309L
+#define SOKOL_IMPL
+#define SOKOL_GLCORE
+
+#include "sokol_app.h"
+#include "sokol_gfx.h"
+#include "sokol_glue.h"
+#include "sokol_log.h"
+
+#include "sokol_app.c"
+
 #include "zero_slab.h"
 
+
 ZeroSlab* slab = nullptr;
-int main()
-{
-	slab = init_slab();
-	// ReSharper disable once CppLocalVariableMayBeConst
-	float my_val = slab -> pos_x[1] = 1000;
-	printf("Value: %f\n", my_val);
-	return 0;
-}

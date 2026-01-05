@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -std=c23 -Iinclude -O3 -Wall -Wextra -Werror -Wpedantic
+CFLAGS = -std=c23 -Iinclude -O3 -Wall -Wextra -Werror -lX11 -lGL -lXcursor -lXi -lm -ldl
 SRC = src/main.c
 OUT = build/zero-over-zero
 
