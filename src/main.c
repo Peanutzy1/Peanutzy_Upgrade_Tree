@@ -1,5 +1,5 @@
 // The single transportation unit
-#define _POSIX_C_SOURCE 199309L
+define _POSIX_C_SOURCE 199309L
 #define _POSIX_C_SOURCE 199309L
 #define SOKOL_IMPL
 #define SOKOL_GLCORE
