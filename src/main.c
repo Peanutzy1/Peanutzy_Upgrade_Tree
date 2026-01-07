@@ -1,17 +1,49 @@
 // The single transportation unit
-define _POSIX_C_SOURCE 199309L
+// GLFW stuff
+
 #define _POSIX_C_SOURCE 199309L
-#define SOKOL_IMPL
-#define SOKOL_GLCORE
+#define _GNU_SOURCE
 
-#include "sokol_app.h"
-#include "sokol_gfx.h"
-#include "sokol_glue.h"
-#include "sokol_log.h"
+#include <stdio.h>
 
-#include "sokol_app.c"
+#include <GLFW/glfw3.h>
 
 #include "zero_slab.h"
 
-
 ZeroSlab* slab = nullptr;
+int main(void) {
+
+    if (!glfwInit()) {
+        printf("Failed to init GLFW\n");
+        return -1;
+    }
+
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Zero-Over-Zero Engine", NULL, NULL);
+    if (!window) {
+        printf("Failed to create window\n");
+        glfwTerminate();
+        return -1;
+    }
+
+    glfwMakeContextCurrent(window);
+
+    glfwSwapInterval(1);
+
+    slab = zs_init_slab();
+
+    if (!slab) return 1;
+
+    printf("Slab initialized with %d max entities.\n", MAX_ENTITIES);
+
+
+    [[maybe_unused]] float dt = 0.0f;
+    double lastTime = glfwGetTime();
+
+    while(!glfwWindowShouldClose(window)) 
+    {   
+        float currentTime = glfwGetTime();
+        dt = (float)(currentTime - lastTime);
+        lastTime = currentTime;
+    }
+}
+

@@ -3,8 +3,9 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
-#define MAX_ENTITIES 1 << 7
 
+
+constexpr int MAX_ENTITIES = 1 << 7;
 
 typedef struct {
   uint16_t startIndex;
@@ -36,11 +37,9 @@ typedef struct {
 
 } ZeroSlab;
 
-extern ZeroSlab* slab;
-
-static inline ZeroSlab* init_slab(void)
+static inline ZeroSlab* zs_init_slab(void)
 {
-  slab = (ZeroSlab *)aligned_alloc(64, sizeof(ZeroSlab));
+  ZeroSlab* slab = (ZeroSlab *)aligned_alloc(64, sizeof(ZeroSlab));
   if (!slab) return nullptr;
   memset(slab, 0, sizeof(ZeroSlab));
   for (int i = 0; i < MAX_ENTITIES; i++)
@@ -51,7 +50,7 @@ static inline ZeroSlab* init_slab(void)
   return slab;
 }
 
-static inline uint16_t spawn(void) 
+static inline uint16_t zs_spawn(ZeroSlab* slab) 
 {
   // make sure the amount of entities is sufficient
   assert(slab->active_count < MAX_ENTITIES);
@@ -66,7 +65,7 @@ static inline uint16_t spawn(void)
   return id;
 }
 
-static inline void delete_entity(uint16_t entityID)
+static inline void zs_delete_entity(ZeroSlab* slab, uint16_t entityID)
 {
   assert(entityID < slab->active_count);
 
