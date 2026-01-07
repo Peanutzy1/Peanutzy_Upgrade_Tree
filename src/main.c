@@ -8,55 +8,38 @@
 
 #include <GLFW/glfw3.h>
 
-#include "zero_slab.h"
+#include "slab.h"
+
+#include "render.c"
+#include "system.c"
 
 ZeroSlab* slab = nullptr;
 int main(void) {
-
-    if (!glfwInit()) {
-        printf("Failed to init GLFW\n");
-        return -1;
-    }
-
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Zero-Over-Zero Engine", NULL, NULL);
-    if (!window) {
-        printf("Failed to create window\n");
-        glfwTerminate();
-        return -1;
-    }
-
-    glfwMakeContextCurrent(window);
-
-    glfwSwapInterval(1);
-
-    slab = zs_init_slab();
-
+    slab = z_slab_init();
     if (!slab) return 1;
+
+    z_render_init(slab);
+    z_system_init();
 
     printf("Slab initialized with %d max entities.\n", MAX_ENTITIES);
 
-
-    [[maybe_unused]] float dt = 0.0f;
-    double lastTime = glfwGetTime();
-
     glClearColor(0.0f, 0.0f, 0.0, 1.0f); 
-    
-    while(!glfwWindowShouldClose(window))
-    {      
-        // ===== INPUT =====
+
+    slab->last_time = glfwGetTime();
+    while(!glfwWindowShouldClose(slab->window))
+    {
+        // ===== PURGATORY (important) =====
         glfwPollEvents();
 
-        // ===== LOGIC =====
-        float currentTime = glfwGetTime();
-        dt = (float)(currentTime - lastTime);
-        lastTime = currentTime;
+        slab->current_time = glfwGetTime();
+        slab->dt = (float)(slab->current_time - slab->last_time);
+        slab->last_time = slab->current_time;
 
-
-        // ===== RENDER =====
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        // ===== DISPLAY =====
-        glfwSwapBuffers(window);
+        
+        
+        z_system_loop(slab);
+        z_render_loop(); // do da rendering
+        glfwSwapBuffers(slab->window); // display everything
     }
 }
 
