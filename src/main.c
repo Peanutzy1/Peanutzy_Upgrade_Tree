@@ -39,11 +39,24 @@ int main(void) {
     [[maybe_unused]] float dt = 0.0f;
     double lastTime = glfwGetTime();
 
-    while(!glfwWindowShouldClose(window)) 
-    {   
+    glClearColor(0.0f, 0.0f, 0.0, 1.0f); 
+    
+    while(!glfwWindowShouldClose(window))
+    {      
+        // ===== INPUT =====
+        glfwPollEvents();
+
+        // ===== LOGIC =====
         float currentTime = glfwGetTime();
         dt = (float)(currentTime - lastTime);
         lastTime = currentTime;
+
+
+        // ===== RENDER =====
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // ===== DISPLAY =====
+        glfwSwapBuffers(window);
     }
 }
 
