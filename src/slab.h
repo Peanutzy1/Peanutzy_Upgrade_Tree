@@ -16,23 +16,17 @@ typedef struct {
 
 typedef struct {
   GLFWwindow* window;
-  float cam_x;
-  float cam_y;
-  float mouse_x;
-  float mouse_y;
-
   double last_time;
   double current_time;
+  float cam_x, cam_y;
+  float mouse_x, mouse_y;
   float dt;
-
-  alignas(64)
   uint16_t active_count;
   uint16_t id_pool_top;
 
   alignas(64) 
   uint16_t index_to_id[MAX_ENTITIES];
   uint16_t id_to_index[MAX_ENTITIES];
-
   uint16_t id_pool[MAX_ENTITIES];
 
   float pos_x[MAX_ENTITIES];
@@ -40,10 +34,9 @@ typedef struct {
   float size_w[MAX_ENTITIES];
   float size_h[MAX_ENTITIES];
   
-
   uint32_t color_rgba[MAX_ENTITIES];
-  uint32_t bitmask_general[MAX_ENTITIES];
-  uint32_t bitmask_unique[MAX_ENTITIES];
+  uint32_t bitmask_system[MAX_ENTITIES];
+  uint32_t bitmask_render[MAX_ENTITIES];
 
 } ZeroSlab;
 
@@ -102,8 +95,8 @@ static inline void zs_delete_entity(ZeroSlab* slab, uint16_t entityID)
   slab->color_rgba[hole_idx] = slab->color_rgba[last_idx];
 
   // ===== BITMASKS ======
-  slab->bitmask_general[hole_idx] = slab->bitmask_general[last_idx];
-  slab->bitmask_unique[hole_idx] = slab->bitmask_unique[last_idx];
+  slab->bitmask_system[hole_idx] = slab->bitmask_system[last_idx];
+  slab->bitmask_render[hole_idx] = slab->bitmask_render[last_idx];
 
   // magic in these 2 lines
   slab->id_to_index[last_entity_id] = hole_idx;
