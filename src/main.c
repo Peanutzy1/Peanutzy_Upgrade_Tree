@@ -8,38 +8,38 @@
 
 #include <GLFW/glfw3.h>
 
-#include "slab.h"
+#include "./z-drive/z-drive-tools.h"
 
 #include "render.c"
 #include "system.c"
 
-ZeroSlab* slab = nullptr;
+ZDrive* drive = nullptr;
 int main(void) {
-    slab = z_slab_init();
-    if (!slab) return 1;
+    drive = z_drive_init();
+    if (!drive) return 1;
 
-    z_render_init(slab);
+    z_render_init(drive);
     z_system_init();
 
-    printf("Slab initialized with %d max entities.\n", MAX_ENTITIES);
+    printf("drive initialized with %d max entities.\n", MAX_ENTITIES);
 
     glClearColor(0.0f, 0.0f, 0.0, 1.0f); 
 
-    slab->last_time = glfwGetTime();
-    while(!glfwWindowShouldClose(slab->window))
+    drive->last_time = glfwGetTime();
+    while(!glfwWindowShouldClose(drive->window))
     {
         // ===== PURGATORY (important) =====
         glfwPollEvents();
 
-        slab->current_time = glfwGetTime();
-        slab->dt = (float)(slab->current_time - slab->last_time);
-        slab->last_time = slab->current_time;
+        drive->current_time = glfwGetTime();
+        drive->delta_time = (float)(drive->current_time - drive->last_time);
+        drive->last_time = drive->current_time;
 
         
         
-        z_system_loop(slab);
+        z_system_loop(drive);
         z_render_loop(); // do da rendering
-        glfwSwapBuffers(slab->window); // display everything
+        glfwSwapBuffers(drive->window); // display everything
     }
 }
 

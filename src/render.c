@@ -2,9 +2,10 @@
 
 #include <GLFW/glfw3.h>
 
-#include "slab.h"
+#include "./z-drive/z-drive.h" // IWYU pragma: keep
 
-int z_render_init(ZeroSlab* slab) {
+
+int z_render_init(ZDrive* drive) {
     if (!glfwInit()) {
         printf("Failed to init GLFW\n");
         return -1;
@@ -14,15 +15,15 @@ int z_render_init(ZeroSlab* slab) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    slab->window = glfwCreateWindow(800, 600, "Zero-Over-Zero", NULL, NULL);
+    drive->window = glfwCreateWindow(800, 600, "Zero-Over-Zero", NULL, NULL);
     
-    if (!slab->window) {
+    if (!drive->window) {
         printf("Failed to create window\n");
         glfwTerminate();
         return -1;
     }
 
-    glfwMakeContextCurrent(slab->window);
+    glfwMakeContextCurrent(drive->window);
     glfwSwapInterval(1); // Enable VSync
 
     glClearColor(0.1f, 0.1f, 0.15f, 1.0f); 

@@ -1,13 +1,13 @@
 #include <stdio.h>
-#include "./slab.h"
+#include "./z-drive/z-drive.h" // IWYU pragma: keep
 
 int z_system_init() {
     printf("hi the systems init");
     return 0;
 }
 
-int z_system_loop(ZeroSlab* slab) {
-    slab->cam_x += slab->dt;
-    printf("hi your camera x is: %f\n", slab->cam_x);
+int z_system_loop(ZDrive* drive) {
+    drive->cam_x += drive->delta_time;
+    printf("hi your camera x is: %f\n", drive->cam_x);
     return 0;
 }
