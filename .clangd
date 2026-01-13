@@ -1,4 +1,5 @@
-If:
-  PathMatch: .*sokol.*
-Diagnostics:
-  Suppress: "*"
+CompileFlags:
+  Add: 
+    - "-I/usr/include"
+    - "-std=c23"
+  CompilationDatabase: "."

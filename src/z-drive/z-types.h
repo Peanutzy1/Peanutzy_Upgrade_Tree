@@ -10,16 +10,19 @@ typedef int16_t ZEntityMaxAmount;
 struct ZDrive;
 typedef struct ZDrive ZDrive;
 
-typedef struct {
+typedef struct
+{
     uint8_t render_slab_chunk;
 } ZEntityDescriptor;
 
-typedef struct {
+typedef struct
+{
     ZEntityMaxAmount count;
     ZEntityIndex start_index;
 } ZChunk;
 
-typedef struct {
+typedef struct
+{
     ZChunk chunks[MAX_CHUNKS_PER_SLAB];
     ZEntityIndex index_to_chunk[MAX_ENTITIES];
     ZEntityIndex id_to_index[MAX_ENTITIES];
@@ -27,5 +30,5 @@ typedef struct {
 
     uint8_t chunk_count;
 
-    uint8_t pad; 
+    uint8_t pad;
 } ZSlabHeader;

@@ -1,14 +1,18 @@
-#include <assert.h>
 #include "z-drive.h" // IWYU pragma: keep
+#include <assert.h>
 
-static inline bool z_chunk_has_space(ZSlabHeader* header, uint8_t chunk_id) {
-    ZChunk* chunk = &header->chunks[chunk_id];
+static inline bool z_chunk_has_space(ZSlabHeader *header, uint8_t chunk_id)
+{
+    ZChunk *chunk = &header->chunks[chunk_id];
 
-    if (chunk->start_index < 0) return false;
+    if (chunk->start_index < 0)
+        return false;
 
-    if (chunk_id < MAX_CHUNKS_PER_SLAB - 1) {
-        ZChunk* next = &header->chunks[chunk_id + 1];
-        if (next->start_index >= 0) {
+    if (chunk_id < MAX_CHUNKS_PER_SLAB - 1)
+    {
+        ZChunk *next = &header->chunks[chunk_id + 1];
+        if (next->start_index >= 0)
+        {
             return (chunk->start_index + chunk->count < next->start_index);
         }
     }
@@ -16,10 +20,10 @@ static inline bool z_chunk_has_space(ZSlabHeader* header, uint8_t chunk_id) {
     return (chunk->start_index + chunk->count < MAX_ENTITIES);
 }
 
-static inline ZEntityId z_entity_add(ZDrive* z_ptr, ZEntityDescriptor desc) 
+static inline ZEntityId z_entity_add(ZDrive *z_ptr, ZEntityDescriptor desc)
 {
-    ZSlabHeader* header = &z_ptr->render_slab.head;
-    ZChunk* chunk = &header->chunks[desc.render_slab_chunk];
+    ZSlabHeader *header = &z_ptr->render_slab.head;
+    ZChunk *chunk = &header->chunks[desc.render_slab_chunk];
 
     assert(z_chunk_has_space(header, desc.render_slab_chunk));
 
@@ -36,13 +40,13 @@ static inline ZEntityId z_entity_add(ZDrive* z_ptr, ZEntityDescriptor desc)
     return id;
 }
 
-static inline void z_entity_remove(ZDrive* z_ptr, ZEntityId id_to_remove) 
+static inline void z_entity_remove(ZDrive *z_ptr, ZEntityId id_to_remove)
 {
-    ZSlabHeader* header = &z_ptr->render_slab.head;
-    
+    ZSlabHeader *header = &z_ptr->render_slab.head;
+
     ZEntityIndex hole_idx = header->id_to_index[id_to_remove];
     uint8_t cid = header->index_to_chunk[hole_idx];
-    ZChunk* chunk = &header->chunks[cid];
+    ZChunk *chunk = &header->chunks[cid];
 
     ZEntityIndex last_idx = chunk->start_index + chunk->count - 1;
     ZEntityId last_id = header->index_to_id[last_idx];
