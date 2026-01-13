@@ -6,6 +6,7 @@
 
 #include "render.c"
 #include "system.c"
+#include "setup.c"
 
 ZDrive *drive = nullptr;
 int main(void)
@@ -13,6 +14,8 @@ int main(void)
     drive = z_drive_init();
     if (!drive)
         return 1;
+    
+    z_setup(drive);
 
     z_render_init();
     z_system_init();
@@ -22,6 +25,8 @@ int main(void)
 
     while (!WindowShouldClose())
     {
+        PollInputEvents();
+
         drive->delta_time = GetFrameTime();
 
         z_system_loop(drive);

@@ -6,7 +6,7 @@ int z_render_init() { return 0; }
 int z_render_loop() 
 {   
     BeginDrawing();
-    ClearBackground(GetColor(0xcba6f7ff));
+    ClearBackground(GetColor(0x000000ff));
     EndDrawing();
     return 0; 
 }
