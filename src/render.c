@@ -22,7 +22,9 @@ inline void z_render_button(ZDrive *drive) {
 void z_render_loop(ZDrive *drive)
 {
     BeginDrawing();
+    BeginMode2D(drive->camera);
     ClearBackground(GetColor(0x000000ff));
     z_render_button(drive);
+    EndMode2D();
     EndDrawing();
 }

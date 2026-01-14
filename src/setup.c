@@ -8,6 +8,6 @@ inline void z_setup(ZDrive *drive)
     ZEntityId button =
         z_entity_add(drive, (ZEntityDescriptor){.render_slab_chunk = 0});
 
-    drive->render_slab.positions[id_to_index[button]].x = 400;
-    drive->render_slab.positions[id_to_index[button]].y = 200;
+    drive->render_slab.positions[id_to_index[button]].x = 0;
+    drive->render_slab.positions[id_to_index[button]].y = 0;
 }

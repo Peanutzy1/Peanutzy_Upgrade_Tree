@@ -4,7 +4,7 @@
 
 inline void z_system_init(ZDrive *drive)
 {
-    drive->move_speed = 10;
+    drive->move_speed = 100;
 }
 
 inline void z_system_loop(ZDrive *drive)
