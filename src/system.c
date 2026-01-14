@@ -14,6 +14,6 @@ inline void z_system_loop(ZDrive *drive)
 
 inline void z_movement(ZDrive *drive) {
     float movement = drive->move_speed * drive->delta_time;
-    drive->camera_position.x = movement * (IsKeyDown(KEY_D) - IsKeyDown(KEY_A));
-    drive->camera_position.y = movement * (IsKeyDown(KEY_S) - IsKeyDown(KEY_W));
+    drive->camera_position.x += movement * (IsKeyDown(KEY_D) - IsKeyDown(KEY_A));
+    drive->camera_position.y += movement * (IsKeyDown(KEY_S) - IsKeyDown(KEY_W));
 }
