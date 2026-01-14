@@ -1,4 +1,4 @@
-#include "z-drive.h" // IWYU pragma: keep
+#include "z-types.h" // IWYU pragma: keep
 #include <assert.h>
 
 static inline bool z_chunk_has_space(ZSlabHeader *header, uint8_t chunk_id)
@@ -20,9 +20,9 @@ static inline bool z_chunk_has_space(ZSlabHeader *header, uint8_t chunk_id)
     return (chunk->start_index + chunk->count < MAX_ENTITIES);
 }
 
-static inline ZEntityId z_entity_add(ZDrive *z_ptr, ZEntityDescriptor desc)
+static inline ZEntityId z_entity_add(ZDrive *drive, ZEntityDescriptor desc)
 {
-    ZSlabHeader *header = &z_ptr->render_slab.head;
+    ZSlabHeader *header = &drive->render_slab.head;
     ZChunk *chunk = &header->chunks[desc.render_slab_chunk];
 
     assert(z_chunk_has_space(header, desc.render_slab_chunk));
@@ -30,8 +30,8 @@ static inline ZEntityId z_entity_add(ZDrive *z_ptr, ZEntityDescriptor desc)
     ZEntityIndex render_slab_index = chunk->start_index + chunk->count;
     chunk->count++;
 
-    ZEntityId id = z_ptr->id_pool[z_ptr->id_pool_top];
-    z_ptr->id_pool_top--;
+    ZEntityId id = drive->id_pool[drive->id_pool_top];
+    drive->id_pool_top--;
 
     header->id_to_index[id] = render_slab_index;
     header->index_to_id[render_slab_index] = id;
@@ -40,25 +40,30 @@ static inline ZEntityId z_entity_add(ZDrive *z_ptr, ZEntityDescriptor desc)
     return id;
 }
 
-static inline void z_entity_remove(ZDrive *z_ptr, ZEntityId id_to_remove)
-{
-    ZSlabHeader *header = &z_ptr->render_slab.head;
-
-    ZEntityIndex hole_idx = header->id_to_index[id_to_remove];
-    uint8_t cid = header->index_to_chunk[hole_idx];
+static inline ZEntityIndex z_entity_header_remove(ZSlabHeader *header, ZEntityId id_to_remove, ZEntityIndex *out_last_index) {
+    ZEntityIndex hole_index = header->id_to_index[id_to_remove];
+    uint8_t cid = header->index_to_chunk[hole_index];
     ZChunk *chunk = &header->chunks[cid];
 
-    ZEntityIndex last_idx = chunk->start_index + chunk->count - 1;
-    ZEntityId last_id = header->index_to_id[last_idx];
+    *out_last_index = chunk->start_index + chunk->count - 1;
 
-    z_ptr->render_slab.pos_x[hole_idx] = z_ptr->render_slab.pos_x[last_idx];
-    z_ptr->render_slab.pos_y[hole_idx] = z_ptr->render_slab.pos_y[last_idx];
+    ZEntityId last_id = header->index_to_id[*out_last_index];
 
-    header->id_to_index[last_id] = hole_idx;
-    header->index_to_id[hole_idx] = last_id;
+    header->id_to_index[last_id] = hole_index;
+    header->index_to_id[hole_index] = last_id;
+    header->index_to_chunk[hole_index] = cid;
 
     chunk->count--;
+    return hole_index;
+}
 
-    z_ptr->id_pool_top++;
-    z_ptr->id_pool[z_ptr->id_pool_top] = id_to_remove;
+static inline void z_entity_remove(ZDrive *drive, ZEntityId id_to_remove)
+{
+    ZEntityIndex last_index; // changes per slab
+    ZSlabHeader *header = &drive->render_slab.head;
+
+    ZEntityIndex hole_idx = z_entity_header_remove(header, id_to_remove, &last_index);
+    drive->render_slab.positions[hole_idx] = drive->render_slab.positions[last_index];
+    drive->id_pool_top++;
+    drive->id_pool[drive->id_pool_top] = id_to_remove;
 }

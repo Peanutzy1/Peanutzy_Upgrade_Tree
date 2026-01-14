@@ -1,14 +1,19 @@
-#include "./z-drive/z-drive.h" // IWYU pragma: keep
+#include "./z-drive/z-types.h" // IWYU pragma: keep
+#include <raylib.h>
 #include <stdio.h>
 
-int z_system_init()
+inline void z_system_init(ZDrive *drive)
 {
-    printf("hi the systems init");
-    return 0;
+    drive->move_speed = 10;
 }
 
-int z_system_loop(ZDrive *drive)
+inline void z_system_loop(ZDrive *drive)
 {
-    printf("Delta: %f | CamX: %.20f\n", drive->delta_time, drive->cam_x);
-    return 0;
+    printf("Delta: %f | CamX: %.20f\n", drive->delta_time, drive->camera_position.x);
+}
+
+inline void z_movement(ZDrive *drive) {
+    float movement = drive->move_speed * drive->delta_time;
+    drive->camera_position.x = movement * (IsKeyDown(KEY_D) - IsKeyDown(KEY_A));
+    drive->camera_position.y = movement * (IsKeyDown(KEY_S) - IsKeyDown(KEY_W));
 }
