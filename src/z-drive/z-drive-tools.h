@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "z-types.h" // IWYU pragma: keep
+#include "z-types.h"
+#include "z-args-types.h" // IWYU pragma: keep
 
 static inline void z_render_slab_init(ZDrive *drive)
 {
@@ -12,7 +13,7 @@ static inline void z_render_slab_init(ZDrive *drive)
 
     for (int i = 0; i < MAX_CHUNKS_PER_SLAB; i++)
     {
-        header->chunks[i] = (ZChunk){
+        drive->render_slab.chunks[i] = (ZChunk){
             .start_index = (i == 0) ? 0 : -1,
         };
     }

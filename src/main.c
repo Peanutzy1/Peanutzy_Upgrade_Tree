@@ -7,7 +7,7 @@
 #include "render.c"
 #include "setup.c"
 #include "system.c"
-#include "listeners.c"
+#include "io.c"
 
 ZDrive *drive = nullptr;
 Camera2D camera = {0};
@@ -19,7 +19,9 @@ int main(void)
 
     PollInputEvents();
     z_setup(drive);
-    z_listener_init(drive);
+    
+    z_io_init(drive);
+
     z_render_init();
     z_system_init(drive);
 
@@ -29,7 +31,7 @@ int main(void)
     while (!WindowShouldClose())
     {
         PollInputEvents();
-        z_listener_loop(drive);
+        z_io_loop(drive);
         drive->delta_time = GetFrameTime();
         
         z_movement(drive);
@@ -37,6 +39,5 @@ int main(void)
         z_system_loop(drive);
         z_render_loop(drive);
     }
-
     CloseWindow();
 }

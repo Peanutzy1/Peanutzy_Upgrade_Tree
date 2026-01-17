@@ -1,4 +1,4 @@
-#include "./z-drive/z-types.h" // IWYU pragma: keep
+#include "./z-drive/z-types.h"
 #include <raylib.h>
 #include <stdio.h>
 
@@ -16,4 +16,9 @@ inline void z_movement(ZDrive *drive) {
     float movement = drive->move_speed * drive->delta_time;
     drive->camera_position.x += movement * (IsKeyDown(KEY_D) - IsKeyDown(KEY_A));
     drive->camera_position.y += movement * (IsKeyDown(KEY_S) - IsKeyDown(KEY_W));
+}
+
+
+inline void z_hitcheck() {
+    
 }

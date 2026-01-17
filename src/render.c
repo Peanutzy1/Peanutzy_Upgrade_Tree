@@ -4,10 +4,10 @@
 
 inline int z_render_init() { return 0; }
 
-inline void z_render_button(ZDrive *drive) 
+inline void z_render_button(ZDrive *drive)
 {
-    ZChunk chunk = drive->render_slab.head.chunks[0];
-    for (int i = 0; i < chunk.count; i++ ) 
+    ZChunk chunk = drive->render_slab.chunks[0];
+    for (int i = 0; i < chunk.count; i++)
     {
         Rectangle rect = {
             drive->render_slab.positions[i].x,

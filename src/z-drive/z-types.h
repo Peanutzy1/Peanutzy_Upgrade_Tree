@@ -8,11 +8,7 @@
 typedef int16_t ZEntityId;
 typedef int16_t ZEntityIndex;
 typedef int16_t ZEntityMaxAmount;
-
-typedef struct
-{
-    uint8_t render_slab_chunk;
-} ZEntityDescriptor;
+typedef int16_t ZChunkId;
 
 typedef struct
 {
@@ -22,7 +18,6 @@ typedef struct
 
 typedef struct
 {
-    ZChunk chunks[MAX_CHUNKS_PER_SLAB];
     ZEntityIndex index_to_chunk[MAX_ENTITIES];
     ZEntityIndex id_to_index[MAX_ENTITIES];
     ZEntityId index_to_id[MAX_ENTITIES];
@@ -35,7 +30,10 @@ typedef struct
 typedef struct
 {
     ZSlabHeader head;
+    ZChunk chunks[MAX_CHUNKS_PER_SLAB];
     Vector2 positions[MAX_ENTITIES];
+    Vector2 sizes[MAX_ENTITIES];
+    uint16_t bitmasks[MAX_ENTITIES];
 } ZRenderSlab;
 
 typedef struct
