@@ -41,6 +41,9 @@ inline void z_input_loop(ZDrive *drive)
         drive->mouse_screen,
         drive->camera
     );
+
+    // Branchless update of mouse state bit
+    drive->mouse_states = (drive->mouse_states & ~(Z_MOUSE_LEFT)) | (IsMouseButtonDown(0) ? Z_MOUSE_LEFT : 0);
 }
 
 inline void z_output_loop(ZDrive *drive) 

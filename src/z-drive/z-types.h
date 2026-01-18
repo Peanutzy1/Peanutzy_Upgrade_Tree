@@ -37,6 +37,7 @@ typedef struct
     uint16_t bitmasks[MAX_ENTITIES];
 } ZRenderSlab;
 
+#define Z_MOUSE_LEFT 1 << 0
 typedef struct
 {
     ZEntityId id_pool[MAX_ENTITIES];
@@ -52,5 +53,6 @@ typedef struct
     Vector2 screen_size;
     float move_speed;
     float delta_time;
+    uint8_t mouse_states;
     // uint32_t padding[14];
 } ZDrive;
