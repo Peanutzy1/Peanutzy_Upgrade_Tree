@@ -1,6 +1,6 @@
 #pragma once
-#include <stdint.h>
 #include <raylib.h>
+#include <stdint.h>
 
 #define MAX_ENTITIES 128
 #define MAX_CHUNKS_PER_SLAB 16
@@ -27,6 +27,7 @@ typedef struct
     uint8_t pad;
 } ZSlabHeader;
 
+#define IS_HOVERED 1 << 0
 typedef struct
 {
     ZSlabHeader head;
@@ -45,10 +46,11 @@ typedef struct
 
     Camera2D camera;
 
-    Vector2 camera_position; 
+    Vector2 camera_position;
     Vector2 mouse_world;
     Vector2 mouse_screen;
     Vector2 screen_size;
     float move_speed;
     float delta_time;
+    // uint32_t padding[14];
 } ZDrive;

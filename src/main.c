@@ -4,40 +4,70 @@
 
 #include "./z-drive/z-drive-tools.h"
 
+#include "io.c"
 #include "render.c"
 #include "setup.c"
 #include "system.c"
-#include "io.c"
 
-ZDrive *drive = nullptr;
-Camera2D camera = {0};
 int main(void)
 {
-    drive = z_drive_init();
+    InitWindow(800, 450, "zero-over-zero");
+
+    ZDrive *drive = z_drive_init();
+
     if (!drive)
         return 1;
 
     PollInputEvents();
     z_setup(drive);
-    
+
     z_io_init(drive);
 
     z_render_init();
     z_system_init(drive);
 
-    InitWindow(800, 450, "zero-over-zero");
     SetConfigFlags(FLAG_VSYNC_HINT);
 
     while (!WindowShouldClose())
     {
-        PollInputEvents();
         z_io_loop(drive);
         drive->delta_time = GetFrameTime();
-        
-        z_movement(drive);
 
+        z_movement(drive);
+        z_zoom(drive);
+        z_hitcheck(drive);
+        
         z_system_loop(drive);
         z_render_loop(drive);
+
+        BeginDrawing();
+        EndDrawing();
     }
     CloseWindow();
+    free(drive);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

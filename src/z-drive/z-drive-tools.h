@@ -21,7 +21,7 @@ static inline void z_render_slab_init(ZDrive *drive)
 
 static inline ZDrive *z_drive_init()
 {
-    ZDrive *drive = aligned_alloc(64, sizeof(ZDrive));
+    ZDrive *drive = calloc(1, sizeof(ZDrive));
     if (!drive)
         return nullptr;
 

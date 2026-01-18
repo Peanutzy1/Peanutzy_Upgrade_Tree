@@ -26,8 +26,6 @@ static inline ZEntityId z_entity_add(ZDrive *drive, ZEntityDescriptor desc)
     ZSlabHeader *header = &drive->render_slab.head;
     ZChunk *chunk = &desc.render_slab_chunks[desc.render_slab_chunk];
 
-    assert(z_chunk_has_space(desc.render_slab_chunks, desc.render_slab_chunk));
-
     ZEntityIndex render_slab_index = chunk->start_index + chunk->count;
     chunk->count++;
 
